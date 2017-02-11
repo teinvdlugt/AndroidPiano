@@ -1,0 +1,31 @@
+{
+  "users": {
+    "$uid": {
+      "songs": {
+        "1": {
+          "name": "Piano Concerto No. 3",
+          "opus": "3",
+          "date_composed": 1234,
+          "composers": [
+            1
+          ],
+          "arrangers": null
+        }
+      },
+      "people": {
+        "1": {
+          "name": "Sergei Rachmaninoff"
+        }
+      },
+      "compositions": {
+        "1": {
+          "type": "composition",
+          "people": [
+            1
+          ],
+          "date": 1234
+        }
+      }
+    }
+  }
+}
