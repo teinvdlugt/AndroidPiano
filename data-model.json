@@ -3,27 +3,28 @@
     "$uid": {
       "songs": {
         "1": {
-          "name": "Piano Concerto No. 3",
-          "opus": "3",
-          "date_composed": 1234,
-          "composers": [
-            1
-          ],
-          "arrangers": null
+          "name": "Prelude in G Major",
+          "opus_numbering": "Op. 32 No. 5",
+          "description": "A prelude",
+          "date_composed": 1910,
+          "date_practise_start": 2017,
+          "date_practise_end": null,
+          "done": false,
+          "by_heart": false,
+          "currently_learning": true,
+          "custom_switch_1": true,
+          "custom_text_1": true,
+          "sheet_music_link": "https://www.example.com",
+          "composers": {
+            "1": "Sergei Rachmaninoff"
+          },
+          "arrangers": {},
+          "lyricists": {}
         }
       },
       "people": {
         "1": {
           "name": "Sergei Rachmaninoff"
-        }
-      },
-      "compositions": {
-        "1": {
-          "type": "composition",
-          "people": [
-            1
-          ],
-          "date": 1234
         }
       }
     }

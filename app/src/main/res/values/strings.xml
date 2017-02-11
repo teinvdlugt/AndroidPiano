@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Piano</string>
+    <string name="title_hint">Title</string>
+    <string name="composer_hint">Composer</string>
+    <string name="opus_hint">Opus or album</string>
+    <string name="description_hint">Description</string>
+    <string name="button_save">Save</string>
 </resources>
