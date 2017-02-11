@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true); // TODO: 11-2-17 Why?
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        String authId = "AUTH_ID";
+        String authId = "DEBUG";
         mSongsRef = FirebaseDatabase.getInstance().getReference()
                 .child(Database.USERS)
                 .child(authId)
@@ -34,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
                 SongViewHolder.class, mSongsRef) {
             @Override
             protected void populateViewHolder(SongViewHolder viewHolder, Song model, int position) {
-                viewHolder.bind(model);
+                viewHolder.bind(MainActivity.this, model);
             }
-        };
+        }; // TODO: 11-2-17 Use FirebaseIndexRecyclerAdapter, see FirebaseUI docs on GitHub
         recyclerView.setAdapter(mAdapter);
     }
 

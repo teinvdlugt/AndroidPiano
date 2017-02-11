@@ -1,124 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <RelativeLayout
+    <ViewSwitcher
+        android:id="@+id/title_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/title_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_hint"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/title_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/title_hint"
+            android:textSize="24sp" />
+    </ViewSwitcher>
+
+    <ImageButton
+        android:id="@+id/composer_selectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/title_switcher"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_list_black_24dp" />
+
+    <ViewSwitcher
+        android:id="@+id/composer_switcher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_below="@id/title_switcher"
+        android:layout_toLeftOf="@id/composer_selectButton"
+        android:layout_toStartOf="@id/composer_selectButton">
 
-        <ViewSwitcher
-            android:id="@+id/title_switcher"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/title_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/title_hint"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="24sp" />
-
-            <EditText
-                android:id="@+id/title_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/title_hint"
-                android:textSize="24sp" />
-        </ViewSwitcher>
-
-        <ImageButton
-            android:id="@+id/composer_selectButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/title_switcher"
-            android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_list_black_24dp" />
-
-        <ViewSwitcher
-            android:id="@+id/composer_switcher"
+        <TextView
+            android:id="@+id/composer_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/title_switcher"
-            android:layout_toLeftOf="@id/composer_selectButton"
-            android:layout_toStartOf="@id/composer_selectButton">
+            android:text="@string/composer_hint"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/composer_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/composer_hint"
-                android:textColor="?android:textColorSecondary"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/composer_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/composer_hint"
-                android:textSize="16sp" />
-        </ViewSwitcher>
-
-        <ViewSwitcher
-            android:id="@+id/opus_switcher"
+        <EditText
+            android:id="@+id/composer_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/composer_switcher"
-            android:layout_toLeftOf="@id/composer_selectButton"
-            android:layout_toStartOf="@id/composer_selectButton">
+            android:hint="@string/composer_hint"
+            android:textSize="16sp" />
+    </ViewSwitcher>
 
-            <TextView
-                android:id="@+id/opus_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/opus_hint"
-                android:textColor="?android:textColorSecondary"
-                android:textSize="16sp" />
+    <ViewSwitcher
+        android:id="@+id/opus_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/composer_switcher"
+        android:layout_toLeftOf="@id/composer_selectButton"
+        android:layout_toStartOf="@id/composer_selectButton">
 
-            <EditText
-                android:id="@+id/opus_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/opus_hint"
-                android:textSize="16sp" />
-        </ViewSwitcher>
-
-        <ViewSwitcher
-            android:id="@+id/description_switcher"
+        <TextView
+            android:id="@+id/opus_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/opus_switcher"
-            android:layout_toLeftOf="@id/composer_selectButton"
-            android:layout_toStartOf="@id/composer_selectButton">
+            android:text="@string/opus_hint"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/description_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/description_hint"
-                android:textColor="?android:textColorSecondary"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/description_editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/description_hint"
-                android:textSize="16sp" />
-        </ViewSwitcher>
-
-        <Button
-            style="?buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/opus_editText"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/description_switcher"
-            android:text="@string/button_save" />
-    </RelativeLayout>
-</android.support.v4.widget.NestedScrollView>
+            android:hint="@string/opus_hint"
+            android:textSize="16sp" />
+    </ViewSwitcher>
+
+    <ViewSwitcher
+        android:id="@+id/description_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/opus_switcher"
+        android:layout_toLeftOf="@id/composer_selectButton"
+        android:layout_toStartOf="@id/composer_selectButton">
+
+        <TextView
+            android:id="@+id/description_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description_hint"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/description_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/description_hint"
+            android:textSize="16sp" />
+    </ViewSwitcher>
+
+    <Button
+        style="?buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/description_switcher"
+        android:text="@string/button_save" />
+</RelativeLayout>

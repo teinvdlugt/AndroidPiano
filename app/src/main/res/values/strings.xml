@@ -5,4 +5,5 @@
     <string name="opus_hint">Opus or album</string>
     <string name="description_hint">Description</string>
     <string name="button_save">Save</string>
+    <string name="composer_opus_format" formatted="false">%s, %s</string>
 </resources>
