@@ -21,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        // Enable offline capabilities
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        // TODO Maybe show when app is offline?
+        // https://firebase.google.com/docs/database/android/offline-capabilities#section-connection-state
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // TODO: 11-2-17 Why?
