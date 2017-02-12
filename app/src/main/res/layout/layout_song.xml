@@ -120,12 +120,25 @@
 
     <include layout="@layout/layout_divider" />
 
-    <Button
-        android:id="@+id/save_button"
-        style="?buttonBarButtonStyle"
+    <android.support.v7.widget.ButtonBarLayout
+        style="?buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="8dp"
-        android:text="@string/button_save" />
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/remove_button"
+            style="?buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_remove" />
+
+        <Button
+            android:id="@+id/save_button"
+            style="?buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_save" />
+    </android.support.v7.widget.ButtonBarLayout>
 </LinearLayout>

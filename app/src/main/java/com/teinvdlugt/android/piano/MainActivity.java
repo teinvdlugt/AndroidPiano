@@ -51,7 +51,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickAddSong(View view) {
+        Song song = new Song();
         String newKey = mSongsRef.push().getKey();
-        SongActivity.openActivity(this, new Song(newKey));
+        mSongsRef.child(newKey).setValue(song);
+        song.setKey(newKey);
+        SongActivity.openActivity(this, song);
     }
 }

@@ -1,9 +1,11 @@
 package com.teinvdlugt.android.piano;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +32,8 @@ public class SongActivity extends AppCompatActivity {
     private EditText descriptionET;
     private SwitchCompat currentlyLearningSW, doneSW, byHeartSW;
 
+    private boolean removed;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +59,7 @@ public class SongActivity extends AppCompatActivity {
                     finish();
                 }
                 mSong = dataSnapshot.getValue(Song.class);
-                loadSong();
+                if (mSong != null) loadSong();
             }
 
             @Override
@@ -75,6 +79,23 @@ public class SongActivity extends AppCompatActivity {
             public void onClick(View v) {
                 save();
                 finish();
+            }
+        });
+        findViewById(R.id.remove_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(SongActivity.this)
+                        .setMessage(R.string.remove_dialog_message)
+                        .setPositiveButton(R.string.button_remove, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mRef.removeValue();
+                                removed = true;
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .create().show();
             }
         });
 
@@ -146,7 +167,7 @@ public class SongActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         mRef.removeEventListener(mValueListener);
-        save();
+        if (!removed) save();
         super.onDestroy();
     }
 
