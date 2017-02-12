@@ -14,6 +14,10 @@ class Song implements Serializable {
 
     Song() {}
 
+    Song(String key) {
+        this.key = key;
+    }
+
     Song(String title, String composer, String opus, String description) {
         this.title = title;
         this.composer = composer;

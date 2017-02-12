@@ -22,8 +22,7 @@ class SongViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, SongActivity.class)
-                        .putExtra(SongActivity.SONG_EXTRA, mSong));
+                SongActivity.openActivity(mContext, mSong);
             }
         });
     }

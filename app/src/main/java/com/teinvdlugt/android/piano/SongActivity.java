@@ -1,5 +1,7 @@
 package com.teinvdlugt.android.piano;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -146,5 +148,10 @@ public class SongActivity extends AppCompatActivity {
         mRef.removeEventListener(mValueListener);
         save();
         super.onDestroy();
+    }
+
+    public static void openActivity(Context context, Song song) {
+        context.startActivity(new Intent(context, SongActivity.class)
+                .putExtra(SongActivity.SONG_EXTRA, song));
     }
 }

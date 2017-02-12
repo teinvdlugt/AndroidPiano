@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         String authId = "DEBUG";
+        Log.d("hi", "onCreate: hi");
         mSongsRef = Database.getDatabaseInstance().getReference()
                 .child(Database.USERS)
                 .child(authId)
@@ -45,5 +48,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mAdapter.cleanup();
+    }
+
+    public void onClickAddSong(View view) {
+        String newKey = mSongsRef.push().getKey();
+        SongActivity.openActivity(this, new Song(newKey));
     }
 }
