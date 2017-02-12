@@ -3,6 +3,7 @@ package com.teinvdlugt.android.piano;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +15,9 @@ class SongViewHolder extends RecyclerView.ViewHolder {
 
     public SongViewHolder(View itemView) {
         super(itemView);
+        mTitleTV = (TextView) itemView.findViewById(R.id.title_textView);
+        Log.d("spaghetti", "" + itemView);
+        mComposerTV = (TextView) itemView.findViewById(R.id.composer_textView);
         mContext = itemView.getContext();
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -22,8 +26,6 @@ class SongViewHolder extends RecyclerView.ViewHolder {
                         .putExtra(SongActivity.SONG_EXTRA, mSong));
             }
         });
-        mTitleTV = (TextView) itemView.findViewById(R.id.title_textView);
-        mComposerTV = (TextView) itemView.findViewById(R.id.composer_textView);
     }
 
     void bind(Context context, Song data, String key) {

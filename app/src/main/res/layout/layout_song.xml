@@ -6,7 +6,50 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <ViewSwitcher
+    <EditText
+        android:id="@+id/title_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/title_hint"
+        android:textSize="24sp" />
+
+    <ImageButton
+        android:id="@+id/composer_selectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/title_editText"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_list_black_24dp" />
+
+    <EditText
+        android:id="@+id/composer_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_editText"
+        android:layout_toLeftOf="@id/composer_selectButton"
+        android:layout_toStartOf="@id/composer_selectButton"
+        android:hint="@string/composer_hint"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/opus_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/composer_editText"
+        android:hint="@string/opus_hint"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/description_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/opus_editText"
+        android:hint="@string/description_hint"
+        android:textSize="16sp" />
+
+    <!--<ViewSwitcher
         android:id="@+id/title_switcher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -107,14 +150,15 @@
             android:layout_height="wrap_content"
             android:hint="@string/description_hint"
             android:textSize="16sp" />
-    </ViewSwitcher>
+    </ViewSwitcher>-->
 
     <Button
+        android:id="@+id/save_button"
         style="?buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/description_switcher"
+        android:layout_below="@id/description_editText"
         android:text="@string/button_save" />
 </RelativeLayout>
