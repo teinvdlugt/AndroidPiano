@@ -3,6 +3,7 @@ package com.teinvdlugt.android.piano;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ public class SongActivity extends AppCompatActivity {
     private EditText composerET;
     private EditText opusET;
     private EditText descriptionET;
+    private SwitchCompat currentlyLearningSW, doneSW, byHeartSW;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +64,10 @@ public class SongActivity extends AppCompatActivity {
         };
         mRef.addValueEventListener(mValueListener);
 
+        setOnClickListeners();
+    }
+
+    private void setOnClickListeners() {
         findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,21 +75,35 @@ public class SongActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        findViewById(R.id.currentlyLearning_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentlyLearningSW.setChecked(!currentlyLearningSW.isChecked());
+            }
+        });
+        findViewById(R.id.done_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doneSW.setChecked(!doneSW.isChecked());
+            }
+        });
+        findViewById(R.id.byHeart_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byHeartSW.setChecked(!byHeartSW.isChecked());
+            }
+        });
     }
 
     private void initViews() {
-        /*titleVS = (ViewSwitcher) findViewById(R.id.title_switcher);
-        composerVS = (ViewSwitcher) findViewById(R.id.composer_switcher);
-        opusVS = (ViewSwitcher) findViewById(R.id.opus_switcher);
-        descriptionVS = (ViewSwitcher) findViewById(R.id.description_switcher);
-        titleTV = (TextView) findViewById(R.id.title_textView);
-        composerTV = (TextView) findViewById(R.id.composer_textView);
-        opusTV = (TextView) findViewById(R.id.opus_textView);
-        descriptionTV = (TextView) findViewById(R.id.description_textView);*/
         titleET = (EditText) findViewById(R.id.title_editText);
         composerET = (EditText) findViewById(R.id.composer_editText);
         opusET = (EditText) findViewById(R.id.opus_editText);
         descriptionET = (EditText) findViewById(R.id.description_editText);
+        currentlyLearningSW = (SwitchCompat) findViewById(R.id.currentlyLearning_switch);
+        doneSW = (SwitchCompat) findViewById(R.id.done_switch);
+        byHeartSW = (SwitchCompat) findViewById(R.id.byHeart_switch);
     }
 
     private void save() {
@@ -95,6 +115,9 @@ public class SongActivity extends AppCompatActivity {
         mSong.setComposer(composer.isEmpty() ? null : composer);
         mSong.setOpus(opus.isEmpty() ? null : opus);
         mSong.setDescription(description.isEmpty() ? null : description);
+        mSong.setCurrentlyLearning(currentlyLearningSW.isChecked());
+        mSong.setDone(doneSW.isChecked());
+        mSong.setByHeart(byHeartSW.isChecked());
 
         mRef.setValue(mSong);
     }
@@ -104,6 +127,9 @@ public class SongActivity extends AppCompatActivity {
         composerET.setText(mSong.getComposer());
         opusET.setText(mSong.getOpus());
         descriptionET.setText(mSong.getDescription());
+        currentlyLearningSW.setChecked(mSong.isCurrentlyLearning());
+        doneSW.setChecked(mSong.isDone());
+        byHeartSW.setChecked(mSong.isByHeart());
     }
 
     @Override

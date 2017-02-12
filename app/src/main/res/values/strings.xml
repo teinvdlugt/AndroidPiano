@@ -6,4 +6,7 @@
     <string name="description_hint">Description</string>
     <string name="button_save">Save</string>
     <string name="composer_opus_format" formatted="false">%s, %s</string>
+    <string name="switch_byHeart">By heart</string>
+    <string name="switch_currentlyLearning">Currently learning</string>
+    <string name="switch_done">Done</string>
 </resources>
