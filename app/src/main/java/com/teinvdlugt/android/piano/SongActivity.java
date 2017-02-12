@@ -13,11 +13,10 @@ import android.widget.ViewSwitcher;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class SongActivity extends AppCompatActivity {
-    public static final String SONG_ID = "song_id";
+    public static final String SONG_EXTRA = "song";
 
     private Song mSong;
     private DatabaseReference mRef;
@@ -45,12 +44,14 @@ public class SongActivity extends AppCompatActivity {
 
         initViews();
 
-        String songId = getIntent().getStringExtra(SONG_ID);
-        mRef = FirebaseDatabase.getInstance().getReference()
+        mSong = (Song) getIntent().getSerializableExtra(SONG_EXTRA);
+        loadSong();
+
+        mRef = Database.getDatabaseInstance().getReference()
                 .child(Database.USERS)
                 .child("DEBUG")
                 .child(Database.SONGS)
-                .child(songId);
+                .child(mSong.getKey());
         mValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

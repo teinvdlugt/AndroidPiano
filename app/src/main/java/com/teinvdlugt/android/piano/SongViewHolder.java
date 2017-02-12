@@ -10,6 +10,7 @@ class SongViewHolder extends RecyclerView.ViewHolder {
 
     private TextView mTitleTV, mComposerTV;
     private Context mContext;
+    private Song mSong;
 
     public SongViewHolder(View itemView) {
         super(itemView);
@@ -18,14 +19,16 @@ class SongViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 mContext.startActivity(new Intent(mContext, SongActivity.class)
-                        .putExtra(SongActivity.SONG_ID, "1")); // TODO: 11-2-17 Retrieve Song key
+                        .putExtra(SongActivity.SONG_EXTRA, mSong));
             }
         });
         mTitleTV = (TextView) itemView.findViewById(R.id.title_textView);
         mComposerTV = (TextView) itemView.findViewById(R.id.composer_textView);
     }
 
-    void bind(Context context, Song data) {
+    void bind(Context context, Song data, String key) {
+        mSong = data;
+        data.setKey(key);
         mTitleTV.setText(data.getTitle());
         mComposerTV.setText(context.getString(R.string.composer_opus_format,
                 data.getComposer(), data.getOpus()));

@@ -1,11 +1,15 @@
 package com.teinvdlugt.android.piano;
 
-public class Song {
+import java.io.Serializable;
+
+public class Song implements Serializable {
 
     private String title;
     private String composer;
     private String opus;
     private String description;
+
+    private String key;
 
     public Song() {}
 
@@ -46,5 +50,13 @@ public class Song {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

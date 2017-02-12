@@ -5,11 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        // Enable offline capabilities
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         // TODO Maybe show when app is offline?
         // https://firebase.google.com/docs/database/android/offline-capabilities#section-connection-state
 
@@ -31,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         String authId = "DEBUG";
-        mSongsRef = FirebaseDatabase.getInstance().getReference()
+        mSongsRef = Database.getDatabaseInstance().getReference()
                 .child(Database.USERS)
                 .child(authId)
                 .child(Database.SONGS);
@@ -39,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 SongViewHolder.class, mSongsRef) {
             @Override
             protected void populateViewHolder(SongViewHolder viewHolder, Song model, int position) {
-                viewHolder.bind(MainActivity.this, model);
+                viewHolder.bind(MainActivity.this, model, mAdapter.getRef(position).getKey());
             }
         }; // TODO: 11-2-17 Use FirebaseIndexRecyclerAdapter, see FirebaseUI docs on GitHub
         recyclerView.setAdapter(mAdapter);
