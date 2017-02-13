@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
                 .child(Database.USERS)
                 .child(authId)
                 .child(Database.SONGS);
+        Query query = mSongsRef.orderByChild(Database.TITLE);
         mAdapter = new FirebaseRecyclerAdapter<Song, SongViewHolder>(Song.class, R.layout.list_item_song,
-                SongViewHolder.class, mSongsRef) {
+                SongViewHolder.class, query) {
             @Override
             protected void populateViewHolder(SongViewHolder viewHolder, Song model, int position) {
                 viewHolder.bind(MainActivity.this, model, mAdapter.getRef(position).getKey());

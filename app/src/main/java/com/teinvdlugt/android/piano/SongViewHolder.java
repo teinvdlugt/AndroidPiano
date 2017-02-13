@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-class SongViewHolder extends RecyclerView.ViewHolder {
+public class SongViewHolder extends RecyclerView.ViewHolder {
 
     private TextView mTitleTV, mComposerTV;
     private Context mContext;
