@@ -62,17 +62,6 @@ public class MainActivity extends AppCompatActivity {
                         .child(authId)
                         .child(Database.PEOPLE)
                         .orderByKey();
-                composers.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Toast.makeText(MainActivity.this, dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
                 mAdapter = new FirebaseRecyclerAdapter<Composer, ComposerViewHolder>(Composer.class,
                         R.layout.list_item_composer, ComposerViewHolder.class, composers) {
                     @Override
