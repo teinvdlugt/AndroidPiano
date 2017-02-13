@@ -12,4 +12,5 @@
     <string name="button_remove">Remove</string>
     <string name="remove_dialog_message">Remove song?</string>
     <string name="cancel">Cancel</string>
+    <string name="menu_sortByComposer">Sort by composer</string>
 </resources>

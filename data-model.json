@@ -15,17 +15,17 @@
           "custom_switch_1": true,
           "custom_text_1": true,
           "sheet_music_link": "https://www.example.com",
-          "composers": {
-            "1": "Sergei Rachmaninoff"
-          },
+          "composer": "Sergei Rachmaninoff",
           "arrangers": {},
           "lyricists": {}
         }
       },
       "people": {
-        "1": {
-          "name": "Sergei Rachmaninoff"
-        }
+        "Sergei Rachmaninoff": {
+          "existing": true,
+          "date_birth": 1873,
+          "date_death": 1943
+        },
       }
     }
   }

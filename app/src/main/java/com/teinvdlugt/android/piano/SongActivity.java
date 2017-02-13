@@ -143,6 +143,11 @@ public class SongActivity extends AppCompatActivity {
         mSong.setByHeart(byHeartSW.isChecked());
 
         mRef.setValue(mSong);
+        if (mSong.getComposer() != null) {
+            Database.getDatabaseInstance().getReference()
+                    .child(Database.USERS).child("DEBUG").child(Database.PEOPLE)
+                    .child(mSong.getComposer()).child("existing").setValue(true);
+        }
     }
 
     private void loadSong() {
