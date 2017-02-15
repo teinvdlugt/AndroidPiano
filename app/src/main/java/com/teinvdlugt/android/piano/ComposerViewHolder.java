@@ -4,41 +4,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
-public class ComposerViewHolder extends RecyclerView.ViewHolder {
+class ComposerViewHolder extends RecyclerView.ViewHolder {
 
     private TextView nameTV, songsTV;
 
-    public ComposerViewHolder(View itemView) {
+    ComposerViewHolder(View itemView) {
         super(itemView);
         nameTV = (TextView) itemView.findViewById(R.id.composer_textView);
         songsTV = (TextView) itemView.findViewById(R.id.songs_textView);
     }
 
-    void bind(String composerName, DatabaseReference songsRef) {
-        nameTV.setText(composerName);
+    void bind(Composer composer) {
+        nameTV.setText(composer.getName());
 
-        Query query = songsRef.orderByChild(Database.COMPOSER).equalTo(composerName);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                StringBuilder sb = new StringBuilder();
-                for (DataSnapshot snapShot : dataSnapshot.getChildren()) {
-                    sb.append(snapShot.child(Database.TITLE).getValue()).append("\n");
-                }
-                sb.replace(sb.length() - 1, sb.length(), "");
-                songsTV.setText(sb);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                songsTV.setText("Error");
-            }
-        }); // TODO listen for changes
+        // Create text for songsTV
+        StringBuilder sb = new StringBuilder();
+        for (Song song : composer.getSongs()) {
+            sb.append(song.getTitle()).append("\n");
+            // TODO: 15-2-17 Sort by title
+        }
+        sb.replace(sb.length() - 1, sb.length(), "");
+        songsTV.setText(sb);
     }
 }

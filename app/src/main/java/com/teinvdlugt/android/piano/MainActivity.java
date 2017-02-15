@@ -45,23 +45,45 @@ public class MainActivity extends AppCompatActivity {
                 .child(Database.USERS)
                 .child(authId)
                 .child(Database.SONGS);
-        eventListener = new ValueEventListener() { // TODO: 15-2-17 Use ChildEventListener
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Song> songs = new ArrayList<>();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Song song = child.getValue(Song.class);
-                    song.setKey(child.getKey());
-                    songs.add(song);
+
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt(SORT_BY_PREF, SORT_BY_TITLE) == SORT_BY_TITLE) {
+            eventListener = new ValueEventListener() { // TODO: 15-2-17 Use ChildEventListener
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<Song> songs = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Song song = child.getValue(Song.class);
+                        song.setKey(child.getKey());
+                        songs.add(song);
+                    }
+                    mAdapter.setData(songs);
                 }
-                mAdapter.setData(songs);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        };
+                }
+            };
+        } else {
+            eventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    List<Song> songs = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Song song = child.getValue(Song.class);
+                        song.setKey(child.getKey());
+                        songs.add(song);
+                    }
+                    mAdapter.setData(Composer.getComposers(songs));
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+        }
         mSongsRef.orderByChild(Database.TITLE).addValueEventListener(eventListener);
 
         //        int sort_by = PreferenceManager.getDefaultSharedPreferences(this).getInt(SORT_BY_PREF, 0);

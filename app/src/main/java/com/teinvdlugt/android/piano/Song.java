@@ -2,7 +2,7 @@ package com.teinvdlugt.android.piano;
 
 import java.io.Serializable;
 
-class Song implements Serializable {
+class Song implements Serializable, Listable {
 
     private String title;
     private String composer;
