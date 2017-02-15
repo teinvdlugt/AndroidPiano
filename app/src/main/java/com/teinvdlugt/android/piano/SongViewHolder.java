@@ -26,9 +26,8 @@ public class SongViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    void bind(Context context, Song data, String key) {
+    void bind(Context context, Song data) {
         mSong = data;
-        data.setKey(key);
         mTitleTV.setText(data.getTitle());
         mComposerTV.setText(context.getString(R.string.composer_opus_format,
                 data.getComposer(), data.getOpus()));
