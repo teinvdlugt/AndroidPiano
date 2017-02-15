@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int SORT_BY_TITLE = 0;
     public static final int SORT_BY_COMPOSER = 1;
 
-    private SongAdapter mAdapter;
+    private RecyclerAdapter mAdapter;
     private DatabaseReference mSongsRef;
     private ValueEventListener eventListener;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // TODO: 11-2-17 Why?
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new SongAdapter(this);
+        mAdapter = new RecyclerAdapter(this);
 
         String authId = "DEBUG";
         mSongsRef = Database.getDatabaseInstance().getReference()
