@@ -93,6 +93,8 @@
             android:text="@string/state_other" />
     </RadioGroup>
 
+    <include layout="@layout/layout_divider" />
+
     <LinearLayout
         android:id="@+id/byHeart_layout"
         android:layout_width="match_parent"

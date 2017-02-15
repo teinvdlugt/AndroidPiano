@@ -12,6 +12,7 @@ public class Composer implements Listable {
     public static List<Composer> getComposers(List<Song> songs) {
         List<Composer> result = new ArrayList<>();
         for (Song song : songs) {
+            if (song.getComposer() == null) continue;
             int index = getComposerIndex(result, song.getComposer());
             if (index == -1) {
                 Composer newComposer = new Composer();

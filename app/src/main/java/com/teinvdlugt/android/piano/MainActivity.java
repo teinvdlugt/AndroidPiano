@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                     .apply();
             mSongsRef.removeEventListener(eventListener);
             eventListener = item.isChecked() ? sortByComposerEventListener : sortBySongEventListener;
-            mSongsRef.addValueEventListener(eventListener);
+            mSongsRef.orderByChild(Database.TITLE).addValueEventListener(eventListener);
             return true;
         }
         return super.onOptionsItemSelected(item);
