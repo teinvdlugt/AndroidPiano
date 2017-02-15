@@ -1,8 +1,22 @@
 package com.teinvdlugt.android.piano;
 
+import com.google.firebase.database.DataSnapshot;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 class Song implements Serializable, Listable {
+
+    public static List<Song> getSongsList(DataSnapshot snapshot) {
+        List<Song> result = new ArrayList<>();
+        for (DataSnapshot child : snapshot.getChildren()) {
+            Song song = child.getValue(Song.class);
+            song.setKey(child.getKey());
+            result.add(song);
+        }
+        return result;
+    }
 
     private String title;
     private String composer;

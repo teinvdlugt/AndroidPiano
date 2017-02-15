@@ -15,7 +15,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +25,27 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerAdapter mAdapter;
     private DatabaseReference mSongsRef;
     private ValueEventListener eventListener;
+
+    private ValueEventListener sortBySongEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<Song> songs = Song.getSongsList(dataSnapshot);
+            mAdapter.setData(songs);
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {}
+    };
+    private ValueEventListener sortByComposerEventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            List<Song> songs = Song.getSongsList(dataSnapshot);
+            mAdapter.setData(Composer.getComposers(songs));
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {}
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,71 +67,10 @@ public class MainActivity extends AppCompatActivity {
                 .child(Database.SONGS);
 
         if (PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt(SORT_BY_PREF, SORT_BY_TITLE) == SORT_BY_TITLE) {
-            eventListener = new ValueEventListener() { // TODO: 15-2-17 Use ChildEventListener
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    List<Song> songs = new ArrayList<>();
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Song song = child.getValue(Song.class);
-                        song.setKey(child.getKey());
-                        songs.add(song);
-                    }
-                    mAdapter.setData(songs);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-        } else {
-            eventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    List<Song> songs = new ArrayList<>();
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Song song = child.getValue(Song.class);
-                        song.setKey(child.getKey());
-                        songs.add(song);
-                    }
-                    mAdapter.setData(Composer.getComposers(songs));
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-        }
+                .getInt(SORT_BY_PREF, SORT_BY_TITLE) == SORT_BY_TITLE)
+            eventListener = sortBySongEventListener;
+        else eventListener = sortByComposerEventListener;
         mSongsRef.orderByChild(Database.TITLE).addValueEventListener(eventListener);
-
-        //        int sort_by = PreferenceManager.getDefaultSharedPreferences(this).getInt(SORT_BY_PREF, 0);
-//        switch (sort_by) {
-//            case SORT_BY_TITLE:
-//                Query query = mSongsRef.orderByChild(Database.TITLE);
-//                mAdapter = new FirebaseRecyclerAdapter<Song, SongViewHolder>(Song.class, R.layout.list_item_song,
-//                        SongViewHolder.class, query) {
-//                    @Override
-//                    protected void populateViewHolder(SongViewHolder viewHolder, Song model, int position) {
-//                        viewHolder.bind(MainActivity.this, model, mAdapter.getRef(position).getKey());
-//                    }
-//                }; // TODO: 11-2-17 Use FirebaseIndexRecyclerAdapter, see FirebaseUI docs on GitHub
-//                break;
-//            case SORT_BY_COMPOSER:
-//                Query composers = Database.getDatabaseInstance().getReference()
-//                        .child(Database.USERS)
-//                        .child(authId)
-//                        .child(Database.PEOPLE)
-//                        .orderByKey();
-//                mAdapter = new FirebaseRecyclerAdapter<Composer, ComposerViewHolder>(Composer.class,
-//                        R.layout.list_item_composer, ComposerViewHolder.class, composers) {
-//                    @Override
-//                    protected void populateViewHolder(ComposerViewHolder viewHolder, Composer model, int position) {
-//                        viewHolder.bind(mAdapter.getRef(position).getKey(), mSongsRef);
-//                    }
-//                };
-//        }
 
         recyclerView.setAdapter(mAdapter);
     }
@@ -129,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
             PreferenceManager.getDefaultSharedPreferences(this).edit()
                     .putInt(SORT_BY_PREF, item.isChecked() ? SORT_BY_COMPOSER : SORT_BY_TITLE)
                     .apply();
+            mSongsRef.removeEventListener(eventListener);
+            eventListener = item.isChecked() ? sortByComposerEventListener : sortBySongEventListener;
+            mSongsRef.addValueEventListener(eventListener);
             return true;
         }
         return super.onOptionsItemSelected(item);
