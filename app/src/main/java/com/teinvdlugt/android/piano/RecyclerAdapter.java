@@ -66,7 +66,7 @@ class SongViewHolder extends RecyclerView.ViewHolder {
     private Context mContext;
     private Song mSong;
 
-    public SongViewHolder(View itemView) {
+    SongViewHolder(View itemView) {
         super(itemView);
         mTitleTV = (TextView) itemView.findViewById(R.id.title_textView);
         Log.d("spaghetti", "" + itemView);
@@ -83,8 +83,14 @@ class SongViewHolder extends RecyclerView.ViewHolder {
     void bind(Context context, Song data) {
         mSong = data;
         mTitleTV.setText(data.getTitle());
-        mComposerTV.setText(context.getString(R.string.composer_opus_format,
-                data.getComposer(), data.getOpus()));
+
+        // Set composer name & opus text in same TextView
+        String composer = data.getComposer(), opus = data.getOpus();
+        if (composer == null && opus == null) mComposerTV.setVisibility(View.GONE);
+        else mComposerTV.setVisibility(View.VISIBLE);
+        if (composer == null && opus != null) mComposerTV.setText(opus);
+        else if (composer != null && opus == null) mComposerTV.setText(composer);
+        else mComposerTV.setText(context.getString(R.string.composer_opus_format, composer, opus));
     }
 }
 
