@@ -55,47 +55,43 @@
 
     <include layout="@layout/layout_divider" />
 
-    <LinearLayout
-        android:id="@+id/currentlyLearning_layout"
+    <RadioGroup
+        android:id="@+id/state_radioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:padding="14dp">
+        android:padding="16dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/switch_currentlyLearning"
-            android:textColor="?android:textColorPrimary"
+            android:text="@string/state"
             android:textSize="16sp" />
 
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/currentlyLearning_switch"
+        <RadioButton
+            android:id="@+id/stateCurrentlyLearning_radioButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/done_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:padding="14dp">
-
-        <TextView
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/switch_done"
-            android:textColor="?android:textColorPrimary"
-            android:textSize="16sp" />
+            android:text="@string/state_currentlyLearning" />
 
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/done_switch"
+        <RadioButton
+            android:id="@+id/stateDone_radioButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="@string/state_done" />
+
+        <RadioButton
+            android:id="@+id/stateWishList_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/state_wish_list" />
+
+        <RadioButton
+            android:id="@+id/stateOther_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/state_other" />
+    </RadioGroup>
 
     <LinearLayout
         android:id="@+id/byHeart_layout"

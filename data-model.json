@@ -12,6 +12,7 @@
           "done": false,
           "by_heart": false,
           "currently_learning": true,
+          "wish_list": false,
           "custom_switch_1": true,
           "custom_text_1": true,
           "sheet_music_link": "https://www.example.com",

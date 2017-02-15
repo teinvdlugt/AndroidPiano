@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +31,8 @@ public class SongActivity extends AppCompatActivity {
     private EditText composerET;
     private EditText opusET;
     private EditText descriptionET;
-    private SwitchCompat currentlyLearningSW, doneSW, byHeartSW;
+    private RadioGroup stateRG;
+    private SwitchCompat byHeartSW;
 
     private boolean removed;
 
@@ -99,18 +101,6 @@ public class SongActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.currentlyLearning_layout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentlyLearningSW.setChecked(!currentlyLearningSW.isChecked());
-            }
-        });
-        findViewById(R.id.done_layout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doneSW.setChecked(!doneSW.isChecked());
-            }
-        });
         findViewById(R.id.byHeart_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,8 +114,7 @@ public class SongActivity extends AppCompatActivity {
         composerET = (EditText) findViewById(R.id.composer_editText);
         opusET = (EditText) findViewById(R.id.opus_editText);
         descriptionET = (EditText) findViewById(R.id.description_editText);
-        currentlyLearningSW = (SwitchCompat) findViewById(R.id.currentlyLearning_switch);
-        doneSW = (SwitchCompat) findViewById(R.id.done_switch);
+        stateRG = (RadioGroup) findViewById(R.id.state_radioGroup);
         byHeartSW = (SwitchCompat) findViewById(R.id.byHeart_switch);
     }
 
@@ -138,16 +127,25 @@ public class SongActivity extends AppCompatActivity {
         mSong.setComposer(composer.isEmpty() ? null : composer);
         mSong.setOpus(opus.isEmpty() ? null : opus);
         mSong.setDescription(description.isEmpty() ? null : description);
-        mSong.setCurrentlyLearning(currentlyLearningSW.isChecked());
-        mSong.setDone(doneSW.isChecked());
         mSong.setByHeart(byHeartSW.isChecked());
 
-        mRef.setValue(mSong);
-        if (mSong.getComposer() != null) {
-            Database.getDatabaseInstance().getReference()
-                    .child(Database.USERS).child("DEBUG").child(Database.PEOPLE)
-                    .child(mSong.getComposer()).child("existing").setValue(true);
+        // Save stateRG state
+        switch (stateRG.getCheckedRadioButtonId()) {
+            case R.id.stateCurrentlyLearning_radioButton:
+                mSong.setState(Song.STATE_CURRENTLY_LEARNING);
+                break;
+            case R.id.stateDone_radioButton:
+                mSong.setState(Song.STATE_DONE);
+                break;
+            case R.id.stateWishList_radioButton:
+                mSong.setState(Song.STATE_WISH_LIST);
+                break;
+            case R.id.stateOther_radioButton:
+                mSong.setState(Song.STATE_OTHER);
+                break;
         }
+
+        mRef.setValue(mSong);
     }
 
     private void loadSong() {
@@ -155,9 +153,23 @@ public class SongActivity extends AppCompatActivity {
         composerET.setText(mSong.getComposer());
         opusET.setText(mSong.getOpus());
         descriptionET.setText(mSong.getDescription());
-        currentlyLearningSW.setChecked(mSong.isCurrentlyLearning());
-        doneSW.setChecked(mSong.isDone());
         byHeartSW.setChecked(mSong.isByHeart());
+
+        // Set "State" RadioGroup selection
+        switch (mSong.getState()) {
+            case Song.STATE_CURRENTLY_LEARNING:
+                stateRG.check(R.id.stateCurrentlyLearning_radioButton);
+                break;
+            case Song.STATE_DONE:
+                stateRG.check(R.id.stateDone_radioButton);
+                break;
+            case Song.STATE_WISH_LIST:
+                stateRG.check(R.id.stateWishList_radioButton);
+                break;
+            case Song.STATE_OTHER:
+                stateRG.check(R.id.stateOther_radioButton);
+                break;
+        }
     }
 
     @Override

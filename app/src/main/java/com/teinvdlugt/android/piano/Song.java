@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Song implements Serializable, Listable {
+    public static final int STATE_CURRENTLY_LEARNING = 0;
+    public static final int STATE_DONE = 1;
+    public static final int STATE_WISH_LIST = 2;
+    public static final int STATE_OTHER = 3;
 
     public static List<Song> getSongsList(DataSnapshot snapshot) {
         List<Song> result = new ArrayList<>();
@@ -22,7 +26,8 @@ class Song implements Serializable, Listable {
     private String composer;
     private String opus;
     private String description;
-    private boolean currentlyLearning, done, byHeart;
+    private boolean byHeart;
+    private int state = STATE_OTHER;
 
     private String key;
 
@@ -79,27 +84,19 @@ class Song implements Serializable, Listable {
         this.key = key;
     }
 
-    boolean isCurrentlyLearning() {
-        return currentlyLearning;
-    }
-
-    void setCurrentlyLearning(boolean currentlyLearning) {
-        this.currentlyLearning = currentlyLearning;
-    }
-
-    boolean isDone() {
-        return done;
-    }
-
-    void setDone(boolean done) {
-        this.done = done;
-    }
-
     boolean isByHeart() {
         return byHeart;
     }
 
     void setByHeart(boolean byHeart) {
         this.byHeart = byHeart;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }
