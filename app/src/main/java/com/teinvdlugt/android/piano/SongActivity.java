@@ -32,7 +32,7 @@ public class SongActivity extends AppCompatActivity {
     private EditText opusET;
     private EditText descriptionET;
     private RadioGroup stateRG;
-    private SwitchCompat byHeartSW;
+    private SwitchCompat wishListSW, byHeartSW;
 
     private boolean removed;
 
@@ -107,6 +107,12 @@ public class SongActivity extends AppCompatActivity {
                 byHeartSW.setChecked(!byHeartSW.isChecked());
             }
         });
+        findViewById(R.id.wishList_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wishListSW.setChecked(!wishListSW.isChecked());
+            }
+        });
     }
 
     private void initViews() {
@@ -115,6 +121,7 @@ public class SongActivity extends AppCompatActivity {
         opusET = (EditText) findViewById(R.id.opus_editText);
         descriptionET = (EditText) findViewById(R.id.description_editText);
         stateRG = (RadioGroup) findViewById(R.id.state_radioGroup);
+        wishListSW = (SwitchCompat) findViewById(R.id.wishList_switch);
         byHeartSW = (SwitchCompat) findViewById(R.id.byHeart_switch);
     }
 
@@ -127,6 +134,7 @@ public class SongActivity extends AppCompatActivity {
         mSong.setComposer(composer.isEmpty() ? null : composer);
         mSong.setOpus(opus.isEmpty() ? null : opus);
         mSong.setDescription(description.isEmpty() ? null : description);
+        mSong.setWishList(wishListSW.isChecked());
         mSong.setByHeart(byHeartSW.isChecked());
 
         // Save stateRG state
@@ -150,6 +158,7 @@ public class SongActivity extends AppCompatActivity {
         composerET.setText(mSong.getComposer());
         opusET.setText(mSong.getOpus());
         descriptionET.setText(mSong.getDescription());
+        wishListSW.setChecked(mSong.isWishList());
         byHeartSW.setChecked(mSong.isByHeart());
 
         // Set "State" RadioGroup selection

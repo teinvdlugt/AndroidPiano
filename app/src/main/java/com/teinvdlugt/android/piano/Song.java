@@ -22,8 +22,9 @@ class Song implements Serializable, Listable {
     private String composer;
     private String opus;
     private String description;
-    private boolean byHeart;
     private String state = Database.STATE_NOT_LEARNING;
+    private boolean wishList;
+    private boolean byHeart;
 
     private String key;
 
@@ -94,5 +95,13 @@ class Song implements Serializable, Listable {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public boolean isWishList() {
+        return wishList;
+    }
+
+    public void setWishList(boolean wishList) {
+        this.wishList = wishList;
     }
 }
