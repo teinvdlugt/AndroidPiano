@@ -131,17 +131,14 @@ public class SongActivity extends AppCompatActivity {
 
         // Save stateRG state
         switch (stateRG.getCheckedRadioButtonId()) {
+            case R.id.stateNotLearning_radioButton:
+                mSong.setState(Database.STATE_NOT_LEARNING);
+                break;
             case R.id.stateCurrentlyLearning_radioButton:
-                mSong.setState(Song.STATE_CURRENTLY_LEARNING);
+                mSong.setState(Database.STATE_CURRENTLY_LEARNING);
                 break;
-            case R.id.stateDone_radioButton:
-                mSong.setState(Song.STATE_DONE);
-                break;
-            case R.id.stateWishList_radioButton:
-                mSong.setState(Song.STATE_WISH_LIST);
-                break;
-            case R.id.stateOther_radioButton:
-                mSong.setState(Song.STATE_OTHER);
+            case R.id.stateDoneLearning_radioButton:
+                mSong.setState(Database.STATE_DONE_LEARNING);
                 break;
         }
 
@@ -157,17 +154,14 @@ public class SongActivity extends AppCompatActivity {
 
         // Set "State" RadioGroup selection
         switch (mSong.getState()) {
-            case Song.STATE_CURRENTLY_LEARNING:
+            case Database.STATE_NOT_LEARNING:
+                stateRG.check(R.id.stateNotLearning_radioButton);
+                break;
+            case Database.STATE_CURRENTLY_LEARNING:
                 stateRG.check(R.id.stateCurrentlyLearning_radioButton);
                 break;
-            case Song.STATE_DONE:
-                stateRG.check(R.id.stateDone_radioButton);
-                break;
-            case Song.STATE_WISH_LIST:
-                stateRG.check(R.id.stateWishList_radioButton);
-                break;
-            case Song.STATE_OTHER:
-                stateRG.check(R.id.stateOther_radioButton);
+            case Database.STATE_DONE_LEARNING:
+                stateRG.check(R.id.stateDoneLearning_radioButton);
                 break;
         }
     }

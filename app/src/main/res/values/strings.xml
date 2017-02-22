@@ -16,4 +16,6 @@
     <string name="state_wish_list">Wish list</string>
     <string name="state_other">Other</string>
     <string name="state">State:</string>
+    <string name="state_notLearning">Not learning</string>
+    <string name="state_doneLearning">Done learning</string>
 </resources>

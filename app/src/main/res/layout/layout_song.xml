@@ -68,29 +68,23 @@
             android:textSize="16sp" />
 
         <RadioButton
+            android:id="@+id/stateNotLearning_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/state_notLearning" />
+
+        <RadioButton
             android:id="@+id/stateCurrentlyLearning_radioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/state_currentlyLearning" />
 
         <RadioButton
-            android:id="@+id/stateDone_radioButton"
+            android:id="@+id/stateDoneLearning_radioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/state_done" />
-
-        <RadioButton
-            android:id="@+id/stateWishList_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/state_wish_list" />
-
-        <RadioButton
-            android:id="@+id/stateOther_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/state_other" />
+            android:text="@string/state_doneLearning" />
     </RadioGroup>
 
     <include layout="@layout/layout_divider" />
