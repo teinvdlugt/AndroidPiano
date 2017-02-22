@@ -134,4 +134,19 @@ public class MainActivity extends AppCompatActivity {
         song.setKey(newKey);
         SongActivity.openActivity(this, song);
     }
+
+    // Saving and restoring the filter state across lifecycles
+    public static final String FILTER = "filter";
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(FILTER, filter);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        filter = (Filter) savedInstanceState.getSerializable(FILTER);
+    }
 }

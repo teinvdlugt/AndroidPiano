@@ -1,10 +1,11 @@
 package com.teinvdlugt.android.piano;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Filter {
+public class Filter implements Serializable {
     /**
      * Creates a new ArrayList object containing just the songs according to the filter settings.
      *
