@@ -154,6 +154,7 @@ public class SongActivity extends AppCompatActivity {
     }
 
     private void loadSong() {
+        getSupportActionBar().setTitle(mSong.getTitle());
         titleET.setText(mSong.getTitle());
         composerET.setText(mSong.getComposer());
         opusET.setText(mSong.getOpus());
