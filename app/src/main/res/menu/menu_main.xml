@@ -6,4 +6,9 @@
         android:checkable="true"
         android:title="@string/menu_sortByComposer"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/filter_menuAction"
+        android:icon="@drawable/ic_filter_list_black_24dp"
+        android:title="@string/filter"
+        app:showAsAction="ifRoom" />
 </menu>

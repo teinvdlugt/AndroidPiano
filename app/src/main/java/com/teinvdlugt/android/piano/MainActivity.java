@@ -1,7 +1,9 @@
 package com.teinvdlugt.android.piano;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,23 +27,15 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerAdapter mAdapter;
     private DatabaseReference mSongsRef;
-    private ValueEventListener eventListener;
+    private List<Song> mSongs;  // This List contains all songs, no matter the filter
 
-    private ValueEventListener sortBySongEventListener = new ValueEventListener() {
+    private Filter filter = new Filter();
+
+    private ValueEventListener eventListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            List<Song> songs = Song.getSongsList(dataSnapshot);
-            mAdapter.setData(songs);
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {}
-    };
-    private ValueEventListener sortByComposerEventListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            List<Song> songs = Song.getSongsList(dataSnapshot);
-            mAdapter.setData(Composer.getComposers(songs));
+            mSongs = Song.getSongsList(dataSnapshot);
+            resetAdapterSongs();
         }
 
         @Override
@@ -65,14 +60,23 @@ public class MainActivity extends AppCompatActivity {
                 .child(Database.USERS)
                 .child(authId)
                 .child(Database.SONGS);
-
-        if (PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt(SORT_BY_PREF, SORT_BY_TITLE) == SORT_BY_TITLE)
-            eventListener = sortBySongEventListener;
-        else eventListener = sortByComposerEventListener;
         mSongsRef.orderByChild(Database.TITLE).addValueEventListener(eventListener);
 
         recyclerView.setAdapter(mAdapter);
+    }
+
+    /**
+     * Resets the data of the adapter, according to the filter and
+     * the sorting method.
+     */
+    private void resetAdapterSongs() {
+        List<Song> filtered = filter.filter(mSongs);
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt(SORT_BY_PREF, SORT_BY_TITLE) == SORT_BY_TITLE) {
+            mAdapter.setData(filtered);
+        } else {
+            mAdapter.setData(Composer.getComposers(filter.filter(mSongs)));
+        }
     }
 
     @Override
@@ -83,17 +87,35 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.sort_by_composer_menu_action) {
-            item.setChecked(!item.isChecked());
-            PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putInt(SORT_BY_PREF, item.isChecked() ? SORT_BY_COMPOSER : SORT_BY_TITLE)
-                    .apply();
-            mSongsRef.removeEventListener(eventListener);
-            eventListener = item.isChecked() ? sortByComposerEventListener : sortBySongEventListener;
-            mSongsRef.orderByChild(Database.TITLE).addValueEventListener(eventListener);
-            return true;
+        switch (item.getItemId()) {
+            case R.id.sort_by_composer_menu_action:
+                item.setChecked(!item.isChecked());
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                        .putInt(SORT_BY_PREF, item.isChecked() ? SORT_BY_COMPOSER : SORT_BY_TITLE)
+                        .apply();
+                resetAdapterSongs();
+                return true;
+            case R.id.filter_menuAction:
+                onClickFilter();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onClickFilter() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.filter_dialogTitle);
+        builder.setView(R.layout.layout_filter_dialog);
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                filter.setWishList(((CheckBox) ((AlertDialog) dialog)
+                        .findViewById(R.id.wishList_checkbox)).isChecked());
+                resetAdapterSongs();
+            }
+        });
+        AlertDialog dialog = builder.show();
+        ((CheckBox) dialog.findViewById(R.id.wishList_checkbox)).setChecked(filter.isWishList());
     }
 
     @Override

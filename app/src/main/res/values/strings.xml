@@ -13,10 +13,13 @@
     <string name="remove_dialog_message">Remove song?</string>
     <string name="cancel">Cancel</string>
     <string name="menu_sortByComposer">Sort by composer</string>
-    <string name="state_wish_list">Wish list</string>
     <string name="state_other">Other</string>
     <string name="state">State:</string>
     <string name="state_notLearning">Not learning</string>
     <string name="state_doneLearning">Done learning</string>
     <string name="switch_wishList">Wish list</string>
+    <string name="filter">Filter</string>
+    <string name="filter_dialogTitle">Filter</string>
+    <string name="ok">OK</string>
+    <string name="filter_wishList">In wish list</string>
 </resources>
