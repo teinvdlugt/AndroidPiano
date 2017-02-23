@@ -22,4 +22,5 @@
     <string name="filter_dialogTitle">Filter</string>
     <string name="ok">OK</string>
     <string name="filter_wishList">In wish list</string>
+    <string name="star">Star</string>
 </resources>

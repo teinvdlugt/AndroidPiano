@@ -25,6 +25,7 @@ class Song implements Serializable, Listable {
     private String state = Database.STATE_NOT_LEARNING;
     private boolean wishList;
     private boolean byHeart;
+    private boolean starred;
 
     private String key;
 
@@ -103,5 +104,13 @@ class Song implements Serializable, Listable {
 
     public void setWishList(boolean wishList) {
         this.wishList = wishList;
+    }
+
+    public boolean isStarred() {
+        return starred;
+    }
+
+    public void setStarred(boolean starred) {
+        this.starred = starred;
     }
 }

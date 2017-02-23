@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -174,13 +175,31 @@ public class SongActivity extends AppCompatActivity {
                 stateRG.check(R.id.stateDoneLearning_radioButton);
                 break;
         }
+
+        // The state of the star in the menu bar is determined in
+        // onCreateOptionsMenu. That gets called after mSong is retrieved,
+        // so calling invalidateOptionsMenu() here isn't necessary.
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_song, menu);
+        if (mSong != null) {
+            MenuItem star = menu.findItem(R.id.star_menuAction);
+            star.setIcon(mSong.isStarred() ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp);
+        }
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.star_menuAction:
+                mSong.setStarred(!mSong.isStarred());
+                invalidateOptionsMenu();
         }
         return super.onOptionsItemSelected(item);
     }
