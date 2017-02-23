@@ -36,7 +36,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:contentDescription="@string/star"
+        android:contentDescription="@string/starred"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:src="@drawable/ic_star_grey_32dp" />

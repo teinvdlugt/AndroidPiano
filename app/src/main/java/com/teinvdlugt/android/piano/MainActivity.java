@@ -110,12 +110,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 filter.setWishList(((CheckBox) ((AlertDialog) dialog)
-                        .findViewById(R.id.wishList_checkbox)).isChecked());
+                        .findViewById(R.id.wishList_checkBox)).isChecked());
+                filter.setStarred(((CheckBox) ((AlertDialog) dialog)
+                        .findViewById(R.id.starred_checkBox)).isChecked());
                 resetAdapterSongs();
             }
         });
         AlertDialog dialog = builder.show();
-        ((CheckBox) dialog.findViewById(R.id.wishList_checkbox)).setChecked(filter.isWishList());
+        ((CheckBox) dialog.findViewById(R.id.wishList_checkBox)).setChecked(filter.getWishList());
+        ((CheckBox) dialog.findViewById(R.id.starred_checkBox)).setChecked(filter.getStarred());
     }
 
     @Override

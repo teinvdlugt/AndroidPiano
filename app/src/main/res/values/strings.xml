@@ -23,4 +23,5 @@
     <string name="ok">OK</string>
     <string name="filter_wishList">In wish list</string>
     <string name="star">Star</string>
+    <string name="starred">Starred</string>
 </resources>

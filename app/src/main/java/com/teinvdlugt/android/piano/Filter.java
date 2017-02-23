@@ -14,9 +14,11 @@ public class Filter implements Serializable {
     public List<Song> filter(List<Song> list) {
         List<Song> result = new ArrayList<>();
         result.addAll(list);
-        if (wishList) {
+        if (wishList || starred) { // Just to prevent useless work
             for (Iterator<Song> iter = result.iterator(); iter.hasNext(); ) {
-                if (!iter.next().isWishList())
+                Song next = iter.next();
+                if ((wishList && !next.isWishList()) ||
+                        (starred && !next.isStarred()))
                     iter.remove();
             }
         }
@@ -24,12 +26,21 @@ public class Filter implements Serializable {
     }
 
     private boolean wishList = false;
+    private boolean starred = false;
 
-    public boolean isWishList() {
+    public boolean getWishList() {
         return wishList;
     }
 
     public void setWishList(boolean wishList) {
         this.wishList = wishList;
+    }
+
+    public boolean getStarred() {
+        return starred;
+    }
+
+    public void setStarred(boolean starred) {
+        this.starred = starred;
     }
 }
