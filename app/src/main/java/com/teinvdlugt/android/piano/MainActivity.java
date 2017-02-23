@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mSongsRef;
     private List<Song> mSongs;  // This List contains all songs, no matter the filter
 
-    private Filter filter = new Filter();
+    private Filter mFilter = new Filter();
+    private Sorter mSorter = new Sorter();
 
     private ValueEventListener eventListener = new ValueEventListener() {
         @Override
@@ -70,12 +71,13 @@ public class MainActivity extends AppCompatActivity {
      * the sorting method.
      */
     private void resetAdapterSongs() {
-        List<Song> filtered = filter.filter(mSongs);
+        List<Song> filteredAndSorted =
+                mSorter.sort(mFilter.filter(mSongs));
         if (PreferenceManager.getDefaultSharedPreferences(this)
                 .getInt(SORT_BY_PREF, SORT_BY_TITLE) == SORT_BY_TITLE) {
-            mAdapter.setData(filtered);
+            mAdapter.setData(filteredAndSorted);
         } else {
-            mAdapter.setData(Composer.getComposers(filter.filter(mSongs)));
+            mAdapter.setData(Composer.getComposers(mFilter.filter(mSongs)));
         }
     }
 
@@ -109,16 +111,16 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                filter.setWishList(((CheckBox) ((AlertDialog) dialog)
+                mFilter.setWishList(((CheckBox) ((AlertDialog) dialog)
                         .findViewById(R.id.wishList_checkBox)).isChecked());
-                filter.setStarred(((CheckBox) ((AlertDialog) dialog)
+                mFilter.setStarred(((CheckBox) ((AlertDialog) dialog)
                         .findViewById(R.id.starred_checkBox)).isChecked());
                 resetAdapterSongs();
             }
         });
         AlertDialog dialog = builder.show();
-        ((CheckBox) dialog.findViewById(R.id.wishList_checkBox)).setChecked(filter.getWishList());
-        ((CheckBox) dialog.findViewById(R.id.starred_checkBox)).setChecked(filter.getStarred());
+        ((CheckBox) dialog.findViewById(R.id.wishList_checkBox)).setChecked(mFilter.getWishList());
+        ((CheckBox) dialog.findViewById(R.id.starred_checkBox)).setChecked(mFilter.getStarred());
     }
 
     @Override
@@ -144,12 +146,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(FILTER, filter);
+        outState.putSerializable(FILTER, mFilter);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        filter = (Filter) savedInstanceState.getSerializable(FILTER);
+        mFilter = (Filter) savedInstanceState.getSerializable(FILTER);
     }
 }
