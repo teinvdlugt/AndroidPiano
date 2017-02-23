@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -65,12 +66,14 @@ class SongViewHolder extends RecyclerView.ViewHolder {
     private TextView mTitleTV, mComposerTV;
     private Context mContext;
     private Song mSong;
+    private ImageView starImage;
 
     SongViewHolder(View itemView) {
         super(itemView);
         mTitleTV = (TextView) itemView.findViewById(R.id.title_textView);
         Log.d("spaghetti", "" + itemView);
         mComposerTV = (TextView) itemView.findViewById(R.id.composer_textView);
+        starImage = (ImageView) itemView.findViewById(R.id.star_imageView);
         mContext = itemView.getContext();
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +86,7 @@ class SongViewHolder extends RecyclerView.ViewHolder {
     void bind(Context context, Song data) {
         mSong = data;
         mTitleTV.setText(data.getTitle());
+        starImage.setVisibility(data.isStarred() ? View.VISIBLE : View.GONE);
 
         // Set composer name & opus text in same TextView
         String composer = data.getComposer(), opus = data.getOpus();
