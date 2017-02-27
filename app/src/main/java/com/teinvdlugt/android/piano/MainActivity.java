@@ -3,14 +3,17 @@ package com.teinvdlugt.android.piano;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 
 import com.google.firebase.database.DataSnapshot;
@@ -126,10 +129,47 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        // Check composer box (or not)
         menu.findItem(R.id.sort_by_composer_menu_action)
                 .setChecked(PreferenceManager.getDefaultSharedPreferences(this)
                         .getInt(SORT_BY_PREF, SORT_BY_TITLE) == SORT_BY_COMPOSER);
+
+        // Deal with SearchView
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search_menuAction));
+        searchView.setQueryHint(getString(R.string.search));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mFilter.setSearchQuery(newText.trim());
+                resetAdapterSongs();
+                return true;
+            }
+        });
+
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFilter.getSearchQuery() != null && !mFilter.getSearchQuery().isEmpty()) {
+            // Hide soft keyboard
+            View focus = getCurrentFocus();
+            if (focus != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(focus.getWindowToken(), 0);
+            }
+
+            invalidateOptionsMenu();
+            mFilter.setSearchQuery(null);
+            resetAdapterSongs();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void onClickAddSong(View view) {

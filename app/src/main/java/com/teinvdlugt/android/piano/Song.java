@@ -29,6 +29,18 @@ class Song implements Serializable, Listable {
 
     private String key;
 
+    /**
+     * @return Concatenation of all text fields of this song. Handy for
+     * search operation in Filter.java.
+     */
+    public String concatText() {
+        StringBuilder sb = new StringBuilder();
+        for (String s : new String[]{title, composer, opus, description}) {
+            if (!(s == null || s.isEmpty())) sb.append(" ").append(s);
+        }
+        return sb.toString().trim();
+    }
+
     Song() {}
 
     Song(String key) {

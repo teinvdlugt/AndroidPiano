@@ -7,6 +7,12 @@
         android:title="@string/menu_sortByComposer"
         app:showAsAction="never" />
     <item
+        android:id="@+id/search_menuAction"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/filter_menuAction"
         android:icon="@drawable/ic_filter_list_white_24dp"
         android:title="@string/filter"
