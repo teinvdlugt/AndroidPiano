@@ -1,6 +1,7 @@
 package com.teinvdlugt.android.piano;
 
 import java.io.Serializable;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,11 +21,25 @@ public class Filter implements Serializable {
                 if ((
                         wishList && !next.isWishList()) ||
                         (starred && !next.isStarred()) ||
-                        (searchQuery != null && !next.concatText().contains(searchQuery)))
+                        (!matchesSearchQuery(next)))
                     iter.remove();
             }
         }
         return result;
+    }
+
+    private boolean matchesSearchQuery(Song song) {
+        if (searchQuery == null || searchQuery.isEmpty()) return true;
+        String songText = song.concatText();
+        return songText != null && normalizeString(songText).contains(normalizeString(searchQuery));
+    }
+
+    private static String normalizeString(String string) {
+        // Remove accents from characters and convert to lower case.
+        string = string.toLowerCase();
+        string = Normalizer.normalize(string, Normalizer.Form.NFD);
+        string = string.replaceAll("\\p{M}", "");
+        return string;
     }
 
     private boolean wishList = false;
