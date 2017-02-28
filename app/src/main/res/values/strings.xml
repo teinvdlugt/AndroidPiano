@@ -25,4 +25,9 @@
     <string name="star">Star</string>
     <string name="starred">Starred</string>
     <string name="sign_out">Sign out</string>
+    <string name="sign_in_message">Welcome to the app. Please sign in using Google.</string>
+    <string name="sign_in_submessage">This will enable us to safely store your generated data in the cloud.</string>
+    <string name="login_failed">Sorry. Login failed</string>
+    <string name="signIn_connectionFailed">Connection failed</string>
+    <string name="login_successful">Login successful</string>
 </resources>
