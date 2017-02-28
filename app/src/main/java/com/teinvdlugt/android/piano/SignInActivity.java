@@ -59,12 +59,14 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 .build();
         mClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this) // Automatically handle connection lifecycle
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
         findViewById(R.id.signIn_button).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        mClient.clearDefaultAccountAndReconnect();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mClient);
         startActivityForResult(signInIntent, SING_IN_REQUEST_CODE);
     }

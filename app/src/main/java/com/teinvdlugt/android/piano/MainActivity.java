@@ -130,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             case R.id.filter_menuAction:
                 onClickFilter();
                 return true;
+            case R.id.signOut_menuAction:
+                mAuth.signOut();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
