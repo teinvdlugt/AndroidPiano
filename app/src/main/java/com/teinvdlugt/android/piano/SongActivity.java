@@ -1,19 +1,29 @@
 package com.teinvdlugt.android.piano;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +32,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class SongActivity extends AppCompatActivity {
     public static final String SONG_EXTRA = "song";
@@ -123,6 +137,56 @@ public class SongActivity extends AppCompatActivity {
                 wishListSW.setChecked(!wishListSW.isChecked());
             }
         });
+        findViewById(R.id.startedLearningDate_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Long date = mSong.getStartedLearningDate();
+                createDatePicker(date, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        Date date = createDate(year, month, dayOfMonth);
+                        mSong.setStartedLearningDate(date.getTime());
+                        setDateText(R.id.startedLearningDate_textView, R.string.startedLearning_format,
+                                DateFormat.getDateInstance().format(date));
+                    }
+                }).show();
+            }
+        });
+
+        findViewById(R.id.startedLearningDate_clear_imageButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSong.setStartedLearningDate(null);
+                setDateText(R.id.startedLearningDate_textView, R.string.startedLearning_format,
+                        getString(R.string.date_not_set));
+            }
+        });
+    }
+
+    private DatePickerDialog createDatePicker(Long timeInMillis, DatePickerDialog.OnDateSetListener onDateSetListener) {
+        Calendar calendar = Calendar.getInstance();
+        if (timeInMillis != null)
+            calendar.setTimeInMillis(timeInMillis);
+        return new DatePickerDialog(this, onDateSetListener,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    private static Date createDate(int year, int month, int dayOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        return cal.getTime();
+    }
+
+    private void setDateText(@IdRes int textViewId, @StringRes int format, String dateString) {
+        String fullString = getString(format, dateString);
+        SpannableString ss = new SpannableString(fullString);
+        ForegroundColorSpan grey = new ForegroundColorSpan(getColor(this, R.color.textColorSecondary));
+        ss.setSpan(grey, 0, fullString.length() - dateString.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        ((TextView) findViewById(textViewId)).setText(ss);
     }
 
     private void initViews() {
@@ -172,6 +236,9 @@ public class SongActivity extends AppCompatActivity {
         descriptionET.setText(mSong.getDescription());
         wishListSW.setChecked(mSong.isWishList());
         byHeartSW.setChecked(mSong.isByHeart());
+        setDateText(R.id.startedLearningDate_textView, R.string.startedLearning_format,
+                mSong.getStartedLearningDate() == null ? getString(R.string.date_not_set)
+                        : DateFormat.getDateInstance().format(mSong.getStartedLearningDate()));
 
         // Set "State" RadioGroup selection
         switch (mSong.getState()) {
@@ -219,6 +286,12 @@ public class SongActivity extends AppCompatActivity {
         mRef.removeEventListener(mValueListener);
         if (!removed) save();
         super.onDestroy();
+    }
+
+    private static int getColor(Context context, @ColorRes int colorId) {
+        if (Build.VERSION.SDK_INT >= 23)
+            return context.getColor(colorId);
+        else return context.getResources().getColor(colorId);
     }
 
     public static void openActivity(Context context, Song song) {

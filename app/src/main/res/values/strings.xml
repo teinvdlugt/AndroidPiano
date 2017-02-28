@@ -31,4 +31,6 @@
     <string name="signIn_connectionFailed">Connection failed</string>
     <string name="login_successful">Login successful</string>
     <string name="search">Search</string>
+    <string name="startedLearning_format" formatted="false">Started learning: %s</string>
+    <string name="date_not_set">Not set</string>
 </resources>

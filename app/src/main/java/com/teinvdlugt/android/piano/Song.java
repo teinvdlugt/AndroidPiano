@@ -26,6 +26,7 @@ class Song implements Serializable, Listable {
     private boolean wishList;
     private boolean byHeart;
     private boolean starred;
+    private Long startedLearningDate; // In milliseconds
 
     private String key;
 
@@ -42,17 +43,6 @@ class Song implements Serializable, Listable {
     }
 
     Song() {}
-
-    Song(String key) {
-        this.key = key;
-    }
-
-    Song(String title, String composer, String opus, String description) {
-        this.title = title;
-        this.composer = composer;
-        this.opus = opus;
-        this.description = description;
-    }
 
     String getTitle() {
         return title;
@@ -124,5 +114,13 @@ class Song implements Serializable, Listable {
 
     public void setStarred(boolean starred) {
         this.starred = starred;
+    }
+
+    public Long getStartedLearningDate() {
+        return startedLearningDate;
+    }
+
+    public void setStartedLearningDate(Long startedLearningDate) {
+        this.startedLearningDate = startedLearningDate;
     }
 }
