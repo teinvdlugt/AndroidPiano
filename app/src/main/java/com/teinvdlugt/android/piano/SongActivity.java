@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,6 +46,13 @@ public class SongActivity extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            // Not signed in; return to MainActivity to handle with sign in
+            finish();
+            return;
+        }
+
         initViews();
 
         mSong = (Song) getIntent().getSerializableExtra(SONG_EXTRA);
@@ -51,7 +60,7 @@ public class SongActivity extends AppCompatActivity {
 
         mRef = Database.getDatabaseInstance().getReference()
                 .child(Database.USERS)
-                .child("DEBUG")
+                .child(user.getUid())
                 .child(Database.SONGS)
                 .child(mSong.getKey());
         mValueListener = new ValueEventListener() {
