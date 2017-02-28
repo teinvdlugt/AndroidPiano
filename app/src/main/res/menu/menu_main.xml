@@ -17,4 +17,8 @@
         android:icon="@drawable/ic_filter_list_white_24dp"
         android:title="@string/filter"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/signOut_menuAction"
+        android:title="@string/sign_out"
+        app:showAsAction="never" />
 </menu>

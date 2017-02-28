@@ -1,8 +1,10 @@
 package com.teinvdlugt.android.piano;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +12,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,10 +28,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
+    private static final String TAG = "MainActivity"; // Debugging
+
     public static final String SORT_BY_PREF = "sort_by";
     public static final int SORT_BY_TITLE = 0;
     public static final int SORT_BY_COMPOSER = 1;
+
+    private FirebaseAuth mAuth;
 
     private RecyclerAdapter mAdapter;
     private DatabaseReference mSongsRef;
@@ -54,19 +63,40 @@ public class MainActivity extends AppCompatActivity {
         // TODO Maybe show when app is offline?
         // https://firebase.google.com/docs/database/android/offline-capabilities#section-connection-state
 
+        // Deal with Firebase Authentication
+        mAuth = FirebaseAuth.getInstance();
+
+        // Deal with Firebase Database and RecyclerAdapter
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // TODO: 11-2-17 Why?
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RecyclerAdapter(this);
 
-        String authId = "DEBUG";
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid() + ":" + user.getDisplayName());
+            retrieveSongs(user.getUid());
+        } else {
+            // User is signed out
+            Log.d(TAG, "onAuthStateChanged:signed_out");
+            startActivity(new Intent(MainActivity.this, SignInActivity.class));
+        }
+    }
+
+    private void retrieveSongs(String authId) {
+        if (mSongsRef != null && eventListener != null)
+            mSongsRef.removeEventListener(eventListener);
         mSongsRef = Database.getDatabaseInstance().getReference()
                 .child(Database.USERS)
                 .child(authId)
                 .child(Database.SONGS);
         mSongsRef.orderByChild(Database.TITLE).addValueEventListener(eventListener);
-
-        recyclerView.setAdapter(mAdapter);
     }
 
     /**
@@ -102,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.filter_menuAction:
                 onClickFilter();
+                return true;
+            case R.id.signOut_menuAction:
+                mAuth.signOut();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -178,6 +211,18 @@ public class MainActivity extends AppCompatActivity {
         mSongsRef.child(newKey).setValue(song);
         song.setKey(newKey);
         SongActivity.openActivity(this, song);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(this);
     }
 
     // Saving and restoring the filter state across lifecycles
