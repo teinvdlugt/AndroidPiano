@@ -16,7 +16,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SongActivity"
-            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".SongActivity"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity android:name=".SignInActivity" />
     </application>
 </manifest>

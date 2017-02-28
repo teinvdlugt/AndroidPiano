@@ -127,6 +127,7 @@ public class SongActivity extends AppCompatActivity {
     }
 
     private void save() {
+        if (mSong == null) mSong = new Song();
         String title = titleET.getText().toString().trim();
         String composer = composerET.getText().toString().trim();
         String opus = opusET.getText().toString().trim();
