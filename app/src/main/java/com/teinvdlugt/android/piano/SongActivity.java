@@ -20,6 +20,8 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -34,20 +36,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 public class SongActivity extends AppCompatActivity {
     public static final String SONG_EXTRA = "song";
+    public static final String COMPOSER_NAMES_EXTRA = "composerNames";
 
     private Song mSong;
     private DatabaseReference mRef;
     private ValueEventListener mValueListener;
 
-    private EditText titleET;
-    private EditText composerET;
-    private EditText opusET;
-    private EditText descriptionET;
+    private EditText titleET, opusET, descriptionET;
+    private AutoCompleteTextView composerACTV;
     private RadioGroup stateRG;
     private SwitchCompat wishListSW, byHeartSW;
 
@@ -68,6 +70,7 @@ public class SongActivity extends AppCompatActivity {
         }
 
         initViews();
+        setupComposerAutoComplete();
 
         mSong = (Song) getIntent().getSerializableExtra(SONG_EXTRA);
         loadSong();
@@ -97,6 +100,15 @@ public class SongActivity extends AppCompatActivity {
         mRef.addValueEventListener(mValueListener);
 
         setOnClickListeners();
+    }
+
+    private void setupComposerAutoComplete() {
+        ArrayList<String> composerNames = (ArrayList<String>) getIntent().getSerializableExtra(COMPOSER_NAMES_EXTRA);
+        if (composerNames != null && !composerNames.isEmpty()) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    this, android.R.layout.simple_list_item_1, composerNames);
+            composerACTV.setAdapter(adapter);
+        }
     }
 
     private void setOnClickListeners() {
@@ -191,7 +203,7 @@ public class SongActivity extends AppCompatActivity {
 
     private void initViews() {
         titleET = (EditText) findViewById(R.id.title_editText);
-        composerET = (EditText) findViewById(R.id.composer_editText);
+        composerACTV = (AutoCompleteTextView) findViewById(R.id.composer_autoCompleteTextView);
         opusET = (EditText) findViewById(R.id.opus_editText);
         descriptionET = (EditText) findViewById(R.id.description_editText);
         stateRG = (RadioGroup) findViewById(R.id.state_radioGroup);
@@ -202,7 +214,7 @@ public class SongActivity extends AppCompatActivity {
     private void save() {
         if (mSong == null) mSong = new Song();
         String title = titleET.getText().toString().trim();
-        String composer = composerET.getText().toString().trim();
+        String composer = composerACTV.getText().toString().trim();
         String opus = opusET.getText().toString().trim();
         String description = descriptionET.getText().toString().trim();
         mSong.setTitle(title.isEmpty() ? null : title);
@@ -231,7 +243,7 @@ public class SongActivity extends AppCompatActivity {
     private void loadSong() {
         getSupportActionBar().setTitle(mSong.getTitle());
         titleET.setText(mSong.getTitle());
-        composerET.setText(mSong.getComposer());
+        composerACTV.setText(mSong.getComposer());
         opusET.setText(mSong.getOpus());
         descriptionET.setText(mSong.getDescription());
         wishListSW.setChecked(mSong.isWishList());
@@ -294,8 +306,9 @@ public class SongActivity extends AppCompatActivity {
         else return context.getResources().getColor(colorId);
     }
 
-    public static void openActivity(Context context, Song song) {
+    public static void openActivity(Context context, Song song, ArrayList<String> composerNames) {
         context.startActivity(new Intent(context, SongActivity.class)
-                .putExtra(SongActivity.SONG_EXTRA, song));
+                .putExtra(SongActivity.SONG_EXTRA, song)
+                .putExtra(COMPOSER_NAMES_EXTRA, composerNames));
     }
 }

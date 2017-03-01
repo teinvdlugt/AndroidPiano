@@ -28,7 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, RecyclerAdapter.OnSongClickListener {
     private static final String TAG = "MainActivity"; // Debugging
 
     public static final String SORT_BY_PREF = "sort_by";
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); // TODO: 11-2-17 Why?
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new RecyclerAdapter(this);
+        mAdapter = new RecyclerAdapter(this, this);
 
         recyclerView.setAdapter(mAdapter);
     }
@@ -205,12 +205,17 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         }
     }
 
+    @Override
+    public void onClickSong(Song song) {
+        SongActivity.openActivity(this, song, Composer.getComposerNames(mSongs));
+    }
+
     public void onClickAddSong(View view) {
         Song song = new Song();
         String newKey = mSongsRef.push().getKey();
         mSongsRef.child(newKey).setValue(song);
         song.setKey(newKey);
-        SongActivity.openActivity(this, song);
+        SongActivity.openActivity(this, song, Composer.getComposerNames(mSongs));
     }
 
     @Override

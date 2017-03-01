@@ -26,8 +26,8 @@
             android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_list_black_24dp" />
 
-        <EditText
-            android:id="@+id/composer_editText"
+        <AutoCompleteTextView
+            android:id="@+id/composer_autoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/title_editText"
@@ -40,7 +40,7 @@
             android:id="@+id/opus_editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/composer_editText"
+            android:layout_below="@id/composer_autoCompleteTextView"
             android:hint="@string/opus_hint"
             android:textSize="16sp" />
 

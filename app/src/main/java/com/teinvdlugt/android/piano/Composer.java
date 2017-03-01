@@ -1,7 +1,9 @@
 package com.teinvdlugt.android.piano;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Composer implements Listable {
 
@@ -9,7 +11,7 @@ public class Composer implements Listable {
      * From the list of songs, create a list of Composers,
      * each with a name and songs assigned to them
      */
-    public static List<Composer> getComposers(List<Song> songs) {
+    static List<Composer> getComposers(List<Song> songs) {
         List<Composer> result = new ArrayList<>();
         for (Song song : songs) {
             if (song.getComposer() == null) continue;
@@ -26,11 +28,19 @@ public class Composer implements Listable {
         return result;
     }
 
+    static ArrayList<String> getComposerNames(List<Song> songs) {
+        Set<String> set = new HashSet<>();
+        for (Song song : songs) {
+            set.add(song.getComposer());
+        }
+        return new ArrayList<>(set);
+    }
+
     /**
      * Returns the index in the List of the Composer with composerName as name,
      * or -1 if not present.
      */
-    public static int getComposerIndex(List<Composer> list, String composerName) {
+    private static int getComposerIndex(List<Composer> list, String composerName) {
         for (int i = 0; i < list.size(); i++) {
             if (composerName.equals(list.get(i).getName())) {
                 return i;

@@ -17,9 +17,15 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private List<? extends Listable> data;
+    private OnSongClickListener onSongClickListener;
 
-    RecyclerAdapter(Context context) {
+    interface OnSongClickListener {
+        void onClickSong(Song song);
+    }
+
+    RecyclerAdapter(Context context, OnSongClickListener onSongClickListener) {
         this.context = context;
+        this.onSongClickListener = onSongClickListener;
     }
 
     void setData(List<? extends Listable> data) {
@@ -59,65 +65,63 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public int getItemCount() {
         return data == null ? 0 : data.size();
     }
-}
 
-class SongViewHolder extends RecyclerView.ViewHolder {
+    private class SongViewHolder extends RecyclerView.ViewHolder {
+        private TextView mTitleTV, mComposerTV;
+        private Song mSong;
+        private ImageView starImage;
 
-    private TextView mTitleTV, mComposerTV;
-    private Context mContext;
-    private Song mSong;
-    private ImageView starImage;
-
-    SongViewHolder(View itemView) {
-        super(itemView);
-        mTitleTV = (TextView) itemView.findViewById(R.id.title_textView);
-        Log.d("spaghetti", "" + itemView);
-        mComposerTV = (TextView) itemView.findViewById(R.id.composer_textView);
-        starImage = (ImageView) itemView.findViewById(R.id.star_imageView);
-        mContext = itemView.getContext();
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SongActivity.openActivity(mContext, mSong);
-            }
-        });
-    }
-
-    void bind(Context context, Song data) {
-        mSong = data;
-        mTitleTV.setText(data.getTitle());
-        starImage.setVisibility(data.isStarred() ? View.VISIBLE : View.GONE);
-
-        // Set composer name & opus text in same TextView
-        String composer = data.getComposer(), opus = data.getOpus();
-        if (composer == null && opus == null) mComposerTV.setVisibility(View.GONE);
-        else mComposerTV.setVisibility(View.VISIBLE);
-        if (composer == null && opus != null) mComposerTV.setText(opus);
-        else if (composer != null && opus == null) mComposerTV.setText(composer);
-        else mComposerTV.setText(context.getString(R.string.composer_opus_format, composer, opus));
-    }
-}
-
-class ComposerViewHolder extends RecyclerView.ViewHolder {
-
-    private TextView nameTV, songsTV;
-
-    ComposerViewHolder(View itemView) {
-        super(itemView);
-        nameTV = (TextView) itemView.findViewById(R.id.composer_textView);
-        songsTV = (TextView) itemView.findViewById(R.id.songs_textView);
-    }
-
-    void bind(Composer composer) {
-        nameTV.setText(composer.getName());
-
-        // Create text for songsTV
-        StringBuilder sb = new StringBuilder();
-        for (Song song : composer.getSongs()) {
-            sb.append(song.getTitle()).append("\n");
-            // TODO: 15-2-17 Sort by title
+        SongViewHolder(View itemView) {
+            super(itemView);
+            mTitleTV = (TextView) itemView.findViewById(R.id.title_textView);
+            Log.d("spaghetti", "" + itemView);
+            mComposerTV = (TextView) itemView.findViewById(R.id.composer_textView);
+            starImage = (ImageView) itemView.findViewById(R.id.star_imageView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onSongClickListener != null)
+                        onSongClickListener.onClickSong(mSong);
+                }
+            });
         }
-        sb.replace(sb.length() - 1, sb.length(), "");
-        songsTV.setText(sb);
+
+        void bind(Context context, Song data) {
+            mSong = data;
+            mTitleTV.setText(data.getTitle());
+            starImage.setVisibility(data.isStarred() ? View.VISIBLE : View.GONE);
+
+            // Set composer name & opus text in same TextView
+            String composer = data.getComposer(), opus = data.getOpus();
+            if (composer == null && opus == null) mComposerTV.setVisibility(View.GONE);
+            else mComposerTV.setVisibility(View.VISIBLE);
+            if (composer == null && opus != null) mComposerTV.setText(opus);
+            else if (composer != null && opus == null) mComposerTV.setText(composer);
+            else
+                mComposerTV.setText(context.getString(R.string.composer_opus_format, composer, opus));
+        }
+    }
+
+    private class ComposerViewHolder extends RecyclerView.ViewHolder {
+        private TextView nameTV, songsTV;
+
+        ComposerViewHolder(View itemView) {
+            super(itemView);
+            nameTV = (TextView) itemView.findViewById(R.id.composer_textView);
+            songsTV = (TextView) itemView.findViewById(R.id.songs_textView);
+        }
+
+        void bind(Composer composer) {
+            nameTV.setText(composer.getName());
+
+            // Create text for songsTV
+            StringBuilder sb = new StringBuilder();
+            for (Song song : composer.getSongs()) {
+                sb.append(song.getTitle()).append("\n");
+                // TODO: 15-2-17 Sort by title
+            }
+            sb.replace(sb.length() - 1, sb.length(), "");
+            songsTV.setText(sb);
+        }
     }
 }
