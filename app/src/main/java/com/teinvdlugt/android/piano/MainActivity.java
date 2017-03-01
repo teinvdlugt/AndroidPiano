@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     @Override
     public void onClickSong(Song song) {
-        SongActivity.openActivity(this, song, Composer.getComposerNames(mSongs));
+        SongActivity.openActivity(this, song, Composer.getComposerNames(mSongs), Song.getTags(mSongs));
     }
 
     public void onClickAddSong(View view) {
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         String newKey = mSongsRef.push().getKey();
         mSongsRef.child(newKey).setValue(song);
         song.setKey(newKey);
-        SongActivity.openActivity(this, song, Composer.getComposerNames(mSongs));
+        SongActivity.openActivity(this, song, Composer.getComposerNames(mSongs), Song.getTags(mSongs));
     }
 
     @Override

@@ -4,11 +4,13 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 class Song implements Serializable, Listable {
 
-    public static List<Song> getSongsList(DataSnapshot snapshot) {
+    static List<Song> getSongsList(DataSnapshot snapshot) {
         List<Song> result = new ArrayList<>();
         for (DataSnapshot child : snapshot.getChildren()) {
             Song song = child.getValue(Song.class);
@@ -16,6 +18,15 @@ class Song implements Serializable, Listable {
             result.add(song);
         }
         return result;
+    }
+
+    static ArrayList<String> getTags(List<Song> songs) {
+        Set<String> set = new HashSet<>();
+        for (Song song : songs) {
+            List<String> tags = song.getTagsList();
+            set.addAll(tags);
+        }
+        return new ArrayList<>(set);
     }
 
     private String title;
@@ -27,6 +38,7 @@ class Song implements Serializable, Listable {
     private boolean byHeart;
     private boolean starred;
     private Long startedLearningDate; // In milliseconds
+    private String tags;
 
     private String key;
 
@@ -34,12 +46,21 @@ class Song implements Serializable, Listable {
      * @return Concatenation of all text fields of this song. Handy for
      * search operation in Filter.java.
      */
-    public String concatText() {
+    String concatText() {
         StringBuilder sb = new StringBuilder();
         for (String s : new String[]{title, composer, opus, description}) {
             if (!(s == null || s.isEmpty())) sb.append(" ").append(s);
         }
         return sb.toString().trim();
+    }
+
+    ArrayList<String> getTagsList() {
+        if (tags == null) return new ArrayList<>();
+        String[] array = tags.split(",");
+        ArrayList<String> list = new ArrayList<>();
+        for (String tag : array)
+            list.add(tag.trim());
+        return list;
     }
 
     Song() {}
@@ -122,5 +143,13 @@ class Song implements Serializable, Listable {
 
     public void setStartedLearningDate(Long startedLearningDate) {
         this.startedLearningDate = startedLearningDate;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }

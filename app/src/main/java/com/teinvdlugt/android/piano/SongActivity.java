@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,7 @@ import java.util.Date;
 public class SongActivity extends AppCompatActivity {
     public static final String SONG_EXTRA = "song";
     public static final String COMPOSER_NAMES_EXTRA = "composerNames";
+    public static final String TAGS_EXTRA = "tags";
 
     private Song mSong;
     private DatabaseReference mRef;
@@ -50,6 +52,7 @@ public class SongActivity extends AppCompatActivity {
 
     private EditText titleET, opusET, descriptionET;
     private AutoCompleteTextView composerACTV;
+    private MultiAutoCompleteTextView tagsMACTV;
     private RadioGroup stateRG;
     private SwitchCompat wishListSW, byHeartSW;
 
@@ -70,7 +73,7 @@ public class SongActivity extends AppCompatActivity {
         }
 
         initViews();
-        setupComposerAutoComplete();
+        setupAutoComplete();
 
         mSong = (Song) getIntent().getSerializableExtra(SONG_EXTRA);
         loadSong();
@@ -102,12 +105,24 @@ public class SongActivity extends AppCompatActivity {
         setOnClickListeners();
     }
 
-    private void setupComposerAutoComplete() {
+    private void setupAutoComplete() {
+        // Composer auto complete
         ArrayList<String> composerNames = (ArrayList<String>) getIntent().getSerializableExtra(COMPOSER_NAMES_EXTRA);
         if (composerNames != null && !composerNames.isEmpty()) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     this, android.R.layout.simple_list_item_1, composerNames);
             composerACTV.setAdapter(adapter);
+            composerACTV.setThreshold(0);
+        }
+
+        // Tags auto complete
+        ArrayList<String> tags = (ArrayList<String>) getIntent().getSerializableExtra(TAGS_EXTRA);
+        if (tags != null && !tags.isEmpty()) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    this, android.R.layout.simple_list_item_1, tags);
+            tagsMACTV.setAdapter(adapter);
+            tagsMACTV.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+            tagsMACTV.setThreshold(0);
         }
     }
 
@@ -209,6 +224,7 @@ public class SongActivity extends AppCompatActivity {
         stateRG = (RadioGroup) findViewById(R.id.state_radioGroup);
         wishListSW = (SwitchCompat) findViewById(R.id.wishList_switch);
         byHeartSW = (SwitchCompat) findViewById(R.id.byHeart_switch);
+        tagsMACTV = (MultiAutoCompleteTextView) findViewById(R.id.tags_multiAutoCompleteTextView);
     }
 
     private void save() {
@@ -217,10 +233,12 @@ public class SongActivity extends AppCompatActivity {
         String composer = composerACTV.getText().toString().trim();
         String opus = opusET.getText().toString().trim();
         String description = descriptionET.getText().toString().trim();
+        String tags = tagsMACTV.getText().toString().trim();
         mSong.setTitle(title.isEmpty() ? null : title);
         mSong.setComposer(composer.isEmpty() ? null : composer);
         mSong.setOpus(opus.isEmpty() ? null : opus);
         mSong.setDescription(description.isEmpty() ? null : description);
+        mSong.setTags(tags.isEmpty() ? null : tags);
         mSong.setWishList(wishListSW.isChecked());
         mSong.setByHeart(byHeartSW.isChecked());
 
@@ -246,6 +264,7 @@ public class SongActivity extends AppCompatActivity {
         composerACTV.setText(mSong.getComposer());
         opusET.setText(mSong.getOpus());
         descriptionET.setText(mSong.getDescription());
+        tagsMACTV.setText(mSong.getTags());
         wishListSW.setChecked(mSong.isWishList());
         byHeartSW.setChecked(mSong.isByHeart());
         setDateText(R.id.startedLearningDate_textView, R.string.startedLearning_format,
@@ -306,9 +325,11 @@ public class SongActivity extends AppCompatActivity {
         else return context.getResources().getColor(colorId);
     }
 
-    public static void openActivity(Context context, Song song, ArrayList<String> composerNames) {
+    public static void openActivity(Context context, Song song,
+                                    ArrayList<String> composerNames, ArrayList<String> tags) {
         context.startActivity(new Intent(context, SongActivity.class)
                 .putExtra(SongActivity.SONG_EXTRA, song)
-                .putExtra(COMPOSER_NAMES_EXTRA, composerNames));
+                .putExtra(COMPOSER_NAMES_EXTRA, composerNames)
+                .putExtra(TAGS_EXTRA, tags));
     }
 }
