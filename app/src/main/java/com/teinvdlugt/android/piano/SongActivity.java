@@ -53,6 +53,7 @@ public class SongActivity extends AppCompatActivity {
     private EditText titleET, opusET, descriptionET;
     private AutoCompleteTextView composerACTV;
     private MultiAutoCompleteTextView tagsMACTV;
+    private TagLayout tagLayout;
     private RadioGroup stateRG;
     private SwitchCompat wishListSW, byHeartSW;
 
@@ -225,6 +226,7 @@ public class SongActivity extends AppCompatActivity {
         wishListSW = (SwitchCompat) findViewById(R.id.wishList_switch);
         byHeartSW = (SwitchCompat) findViewById(R.id.byHeart_switch);
         tagsMACTV = (MultiAutoCompleteTextView) findViewById(R.id.tags_multiAutoCompleteTextView);
+        tagLayout = (TagLayout) findViewById(R.id.tagLayout);
     }
 
     private void save() {
@@ -284,6 +286,8 @@ public class SongActivity extends AppCompatActivity {
                 break;
         }
 
+        if (mSong.getTags() != null) tagLayout.setTags(mSong.getTags());
+
         // The state of the star in the menu bar is determined in
         // onCreateOptionsMenu. That gets called after mSong is retrieved,
         // so calling invalidateOptionsMenu() here isn't necessary.
@@ -319,7 +323,7 @@ public class SongActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private static int getColor(Context context, @ColorRes int colorId) {
+    public static int getColor(Context context, @ColorRes int colorId) {
         if (Build.VERSION.SDK_INT >= 23)
             return context.getColor(colorId);
         else return context.getResources().getColor(colorId);
