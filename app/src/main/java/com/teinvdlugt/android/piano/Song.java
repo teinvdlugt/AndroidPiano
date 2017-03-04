@@ -23,7 +23,7 @@ class Song implements Serializable, Listable {
     static ArrayList<String> getTags(List<Song> songs) {
         Set<String> set = new HashSet<>();
         for (Song song : songs) {
-            List<String> tags = song.getTagsList();
+            List<String> tags = song.createTagsList();
             set.addAll(tags);
         }
         return new ArrayList<>(set);
@@ -58,7 +58,7 @@ class Song implements Serializable, Listable {
         return sb.toString().trim();
     }
 
-    ArrayList<String> getTagsList() {
+    private ArrayList<String> createTagsList() {
         if (tags == null) return new ArrayList<>();
         String[] array = tags.split(",");
         ArrayList<String> list = new ArrayList<>();

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            tools:text="Prelude in G minor"
+            android:id="@+id/title_textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/edit_imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_mode_edit_black_36dp" />
+    </LinearLayout>
+
+    <TextView
+        tools:text="Sergei Rachmaninoff"
+        android:id="@+id/composer_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:textSize="16sp" />
+
+    <TextView
+        tools:text="Op. 32 No. 5"
+        android:id="@+id/opus_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:textSize="16sp" />
+
+    <TextView
+        tools:text="A prelude."
+        android:id="@+id/description_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:textSize="16sp" />
+
+    <com.teinvdlugt.android.piano.TagLayout
+        android:id="@+id/tagLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp" />
+</LinearLayout>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/title_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/title_hint"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/save_imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_check_black_36dp" />
+    </LinearLayout>
+
+
+    <AutoCompleteTextView
+        android:id="@+id/composer_autoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/composer_hint"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/opus_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/opus_hint"
+        android:textSize="16sp" />
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/tags_multiAutoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/tags_hint"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/description_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/description_hint"
+        android:textSize="16sp" />
+</LinearLayout>

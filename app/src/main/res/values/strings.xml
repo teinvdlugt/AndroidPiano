@@ -34,4 +34,5 @@
     <string name="startedLearning_format" formatted="false">Started learning: %s</string>
     <string name="date_not_set">Not set</string>
     <string name="tags_hint">Tags (separate by comma)</string>
+    <string name="untitled">Untitled</string>
 </resources>

@@ -134,8 +134,8 @@ public class TagLayout extends ViewGroup {
         }
 
         // Check against our minimum height and width
-        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
-        maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
+        maxHeight = Math.max(maxHeight + getPaddingTop() + getPaddingBottom(), getSuggestedMinimumHeight());
+        maxWidth = Math.max(maxWidth + getPaddingLeft() + getPaddingRight(), getSuggestedMinimumWidth());
 
         // Report our final dimensions.
         setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState),

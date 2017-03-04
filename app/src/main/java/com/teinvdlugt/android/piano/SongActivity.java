@@ -20,8 +20,10 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
@@ -41,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class SongActivity extends AppCompatActivity {
+public class SongActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String SONG_EXTRA = "song";
     public static final String COMPOSER_NAMES_EXTRA = "composerNames";
     public static final String TAGS_EXTRA = "tags";
@@ -50,14 +52,19 @@ public class SongActivity extends AppCompatActivity {
     private DatabaseReference mRef;
     private ValueEventListener mValueListener;
 
-    private EditText titleET, opusET, descriptionET;
-    private AutoCompleteTextView composerACTV;
-    private MultiAutoCompleteTextView tagsMACTV;
-    private TagLayout tagLayout;
     private RadioGroup stateRG;
     private SwitchCompat wishListSW, byHeartSW;
 
-    private boolean removed;
+    // Views in edit mode
+    private ViewGroup editingLayout;
+    private EditText titleET, opusET, descriptionET;
+    private AutoCompleteTextView composerACTV;
+    private MultiAutoCompleteTextView tagsMACTV;
+
+    // View in no-edit mode
+    private ViewGroup notEditingLayout;
+    private TextView titleTV, opusTV, descriptionTV, composerTV;
+    private TagLayout tagLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,6 +84,7 @@ public class SongActivity extends AppCompatActivity {
         setupAutoComplete();
 
         mSong = (Song) getIntent().getSerializableExtra(SONG_EXTRA);
+        if (mSong == null) mSong = new Song();
         loadSong();
 
         mRef = Database.getDatabaseInstance().getReference()
@@ -104,6 +112,7 @@ public class SongActivity extends AppCompatActivity {
         mRef.addValueEventListener(mValueListener);
 
         setOnClickListeners();
+        setChangeListeners();
     }
 
     private void setupAutoComplete() {
@@ -128,72 +137,101 @@ public class SongActivity extends AppCompatActivity {
     }
 
     private void setOnClickListeners() {
-        findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                save();
-                finish();
-            }
-        });
-        findViewById(R.id.remove_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(SongActivity.this)
-                        .setMessage(R.string.remove_dialog_message)
-                        .setPositiveButton(R.string.button_remove, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mRef.removeValue();
-                                removed = true;
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null)
-                        .create().show();
-            }
-        });
+        findViewById(R.id.byHeart_layout).setOnClickListener(this);
+        findViewById(R.id.wishList_layout).setOnClickListener(this);
+        findViewById(R.id.startedLearningDate_layout).setOnClickListener(this);
+        findViewById(R.id.startedLearningDate_clear_imageButton).setOnClickListener(this);
+        findViewById(R.id.edit_imageButton).setOnClickListener(this);
+        findViewById(R.id.save_imageButton).setOnClickListener(this);
 
-        findViewById(R.id.byHeart_layout).setOnClickListener(new View.OnClickListener() {
+        tagLayout.setOnTagClickListener(new TagLayout.OnTagClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClickTag(String tag) {
+                Toast.makeText(SongActivity.this, "Lol. You clicked " + tag + "!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.byHeart_layout:
                 byHeartSW.setChecked(!byHeartSW.isChecked());
-            }
-        });
-        findViewById(R.id.wishList_layout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.wishList_layout:
                 wishListSW.setChecked(!wishListSW.isChecked());
-            }
-        });
-        findViewById(R.id.startedLearningDate_layout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.startedLearningDate_layout:
                 Long date = mSong.getStartedLearningDate();
                 createDatePicker(date, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         Date date = createDate(year, month, dayOfMonth);
                         mSong.setStartedLearningDate(date.getTime());
-                        setDateText(R.id.startedLearningDate_textView, R.string.startedLearning_format,
-                                DateFormat.getDateInstance().format(date));
+                        mRef.setValue(mSong);
+                        // Firebase listener handles the UI change
                     }
                 }).show();
-            }
-        });
-
-        findViewById(R.id.startedLearningDate_clear_imageButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.startedLearningDate_clear_imageButton:
                 mSong.setStartedLearningDate(null);
-                setDateText(R.id.startedLearningDate_textView, R.string.startedLearning_format,
-                        getString(R.string.date_not_set));
+                mRef.setValue(mSong);
+                // Firebase listener handles the UI change
+                break;
+            case R.id.edit_imageButton:
+                editingLayout.setVisibility(View.VISIBLE);
+                notEditingLayout.setVisibility(View.GONE);
+                break;
+            case R.id.save_imageButton:
+                String title = titleET.getText().toString().trim();
+                String composer = composerACTV.getText().toString().trim();
+                String opus = opusET.getText().toString().trim();
+                String description = descriptionET.getText().toString().trim();
+                String tags = tagsMACTV.getText().toString().trim();
+                mSong.setTitle(title.isEmpty() ? null : title);
+                mSong.setComposer(composer.isEmpty() ? null : composer);
+                mSong.setOpus(opus.isEmpty() ? null : opus);
+                mSong.setDescription(description.isEmpty() ? null : description);
+                mSong.setTags(tags.isEmpty() ? null : tags);
+                mRef.setValue(mSong);
+
+                editingLayout.setVisibility(View.GONE);
+                notEditingLayout.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    private void setChangeListeners() {
+        stateRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (stateRG.getCheckedRadioButtonId()) {
+                    case R.id.stateNotLearning_radioButton:
+                        mSong.setState(Database.STATE_NOT_LEARNING);
+                        break;
+                    case R.id.stateCurrentlyLearning_radioButton:
+                        mSong.setState(Database.STATE_CURRENTLY_LEARNING);
+                        break;
+                    case R.id.stateDoneLearning_radioButton:
+                        mSong.setState(Database.STATE_DONE_LEARNING);
+                        break;
+                }
+                mRef.setValue(mSong);
             }
         });
 
-        tagLayout.setOnTagClickListener(new TagLayout.OnTagClickListener() {
+        wishListSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClickTag(String tag) {
-                Toast.makeText(SongActivity.this, "Lol. You clicked " + tag + "!", Toast.LENGTH_SHORT).show();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mSong.setWishList(isChecked);
+                mRef.setValue(mSong);
+            }
+        });
+        byHeartSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mSong.setByHeart(isChecked);
+                mRef.setValue(mSong);
             }
         });
     }
@@ -225,61 +263,29 @@ public class SongActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        stateRG = (RadioGroup) findViewById(R.id.state_radioGroup);
+        wishListSW = (SwitchCompat) findViewById(R.id.wishList_switch);
+        byHeartSW = (SwitchCompat) findViewById(R.id.byHeart_switch);
+
+        // Views in edit mode
+        editingLayout = (ViewGroup) findViewById(R.id.texts_edit_layout);
         titleET = (EditText) findViewById(R.id.title_editText);
         composerACTV = (AutoCompleteTextView) findViewById(R.id.composer_autoCompleteTextView);
         opusET = (EditText) findViewById(R.id.opus_editText);
         descriptionET = (EditText) findViewById(R.id.description_editText);
-        stateRG = (RadioGroup) findViewById(R.id.state_radioGroup);
-        wishListSW = (SwitchCompat) findViewById(R.id.wishList_switch);
-        byHeartSW = (SwitchCompat) findViewById(R.id.byHeart_switch);
         tagsMACTV = (MultiAutoCompleteTextView) findViewById(R.id.tags_multiAutoCompleteTextView);
+
+        // Views in no-edit mode
+        notEditingLayout = (ViewGroup) findViewById(R.id.texts_noEdit_layout);
         tagLayout = (TagLayout) findViewById(R.id.tagLayout);
-    }
-
-    private void save() {
-        if (mSong == null) mSong = new Song();
-        String title = titleET.getText().toString().trim();
-        String composer = composerACTV.getText().toString().trim();
-        String opus = opusET.getText().toString().trim();
-        String description = descriptionET.getText().toString().trim();
-        String tags = tagsMACTV.getText().toString().trim();
-        mSong.setTitle(title.isEmpty() ? null : title);
-        mSong.setComposer(composer.isEmpty() ? null : composer);
-        mSong.setOpus(opus.isEmpty() ? null : opus);
-        mSong.setDescription(description.isEmpty() ? null : description);
-        mSong.setTags(tags.isEmpty() ? null : tags);
-        mSong.setWishList(wishListSW.isChecked());
-        mSong.setByHeart(byHeartSW.isChecked());
-
-        // Save stateRG state
-        switch (stateRG.getCheckedRadioButtonId()) {
-            case R.id.stateNotLearning_radioButton:
-                mSong.setState(Database.STATE_NOT_LEARNING);
-                break;
-            case R.id.stateCurrentlyLearning_radioButton:
-                mSong.setState(Database.STATE_CURRENTLY_LEARNING);
-                break;
-            case R.id.stateDoneLearning_radioButton:
-                mSong.setState(Database.STATE_DONE_LEARNING);
-                break;
-        }
-
-        mRef.setValue(mSong);
+        titleTV = (TextView) findViewById(R.id.title_textView);
+        opusTV = (TextView) findViewById(R.id.opus_textView);
+        descriptionTV = (TextView) findViewById(R.id.description_textView);
+        composerTV = (TextView) findViewById(R.id.composer_textView);
     }
 
     private void loadSong() {
         getSupportActionBar().setTitle(mSong.getTitle());
-        titleET.setText(mSong.getTitle());
-        composerACTV.setText(mSong.getComposer());
-        opusET.setText(mSong.getOpus());
-        descriptionET.setText(mSong.getDescription());
-        tagsMACTV.setText(mSong.getTags());
-        wishListSW.setChecked(mSong.isWishList());
-        byHeartSW.setChecked(mSong.isByHeart());
-        setDateText(R.id.startedLearningDate_textView, R.string.startedLearning_format,
-                mSong.getStartedLearningDate() == null ? getString(R.string.date_not_set)
-                        : DateFormat.getDateInstance().format(mSong.getStartedLearningDate()));
-
         // Set "State" RadioGroup selection
         switch (mSong.getState()) {
             case Database.STATE_NOT_LEARNING:
@@ -292,12 +298,29 @@ public class SongActivity extends AppCompatActivity {
                 stateRG.check(R.id.stateDoneLearning_radioButton);
                 break;
         }
+        wishListSW.setChecked(mSong.isWishList());
+        byHeartSW.setChecked(mSong.isByHeart());
+        setDateText(R.id.startedLearningDate_textView, R.string.startedLearning_format,
+                mSong.getStartedLearningDate() == null ? getString(R.string.date_not_set)
+                        : DateFormat.getDateInstance().format(mSong.getStartedLearningDate()));
 
+        // Views in edit mode
+        titleET.setText(mSong.getTitle());
+        composerACTV.setText(mSong.getComposer());
+        opusET.setText(mSong.getOpus());
+        descriptionET.setText(mSong.getDescription());
+        tagsMACTV.setText(mSong.getTags());
+
+        // Views in no-edit mode
+        titleTV.setText(mSong.getTitle() == null ? getString(R.string.untitled) : mSong.getTitle());
+        opusTV.setText(mSong.getOpus());
+        opusTV.setVisibility(mSong.getOpus() == null ? View.GONE : View.VISIBLE);
+        descriptionTV.setText(mSong.getDescription());
+        descriptionTV.setVisibility(mSong.getDescription() == null ? View.GONE : View.VISIBLE);
+        composerTV.setText(mSong.getComposer());
+        composerTV.setVisibility(mSong.getComposer() == null ? View.GONE : View.VISIBLE);
         if (mSong.getTags() != null) tagLayout.setTags(mSong.getTags());
-
-        // The state of the star in the menu bar is determined in
-        // onCreateOptionsMenu. That gets called after mSong is retrieved,
-        // so calling invalidateOptionsMenu() here isn't necessary.
+        tagLayout.setVisibility(mSong.getTags() == null ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -319,6 +342,20 @@ public class SongActivity extends AppCompatActivity {
             case R.id.star_menuAction:
                 mSong.setStarred(!mSong.isStarred());
                 invalidateOptionsMenu();
+                return true;
+            case R.id.remove_menuAction:
+                new AlertDialog.Builder(SongActivity.this)
+                        .setMessage(R.string.remove_dialog_message)
+                        .setPositiveButton(R.string.button_remove, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mRef.removeValue();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null)
+                        .create().show();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -326,7 +363,6 @@ public class SongActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         mRef.removeEventListener(mValueListener);
-        if (!removed) save();
         super.onDestroy();
     }
 

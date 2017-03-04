@@ -4,56 +4,19 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/title_editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/title_hint"
-            android:textSize="24sp" />
+        <include
+            android:id="@+id/texts_edit_layout"
+            layout="@layout/layout_song_texts_edit"
+            android:visibility="gone" />
 
-        <AutoCompleteTextView
-            android:id="@+id/composer_autoCompleteTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_editText"
-            android:hint="@string/composer_hint"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/opus_editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/composer_autoCompleteTextView"
-            android:hint="@string/opus_hint"
-            android:textSize="16sp" />
-
-        <MultiAutoCompleteTextView
-            android:id="@+id/tags_multiAutoCompleteTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/opus_editText"
-            android:hint="@string/tags_hint"
-            android:textSize="16sp" />
-
-        <com.teinvdlugt.android.piano.TagLayout
-            android:id="@+id/tagLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tags_multiAutoCompleteTextView" />
-
-        <EditText
-            android:id="@+id/description_editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tagLayout"
-            android:hint="@string/description_hint"
-            android:textSize="16sp" />
-    </RelativeLayout>
+        <include
+            android:id="@+id/texts_noEdit_layout"
+            layout="@layout/layout_song_texts_noedit" />
+    </FrameLayout>
 
     <include layout="@layout/layout_divider" />
 
@@ -164,26 +127,4 @@
     </LinearLayout>
 
     <include layout="@layout/layout_divider" />
-
-    <android.support.v7.widget.ButtonBarLayout
-        style="?buttonBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="8dp">
-
-        <Button
-            android:id="@+id/remove_button"
-            style="?buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_remove" />
-
-        <Button
-            android:id="@+id/save_button"
-            style="?buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_save" />
-    </android.support.v7.widget.ButtonBarLayout>
 </LinearLayout>
