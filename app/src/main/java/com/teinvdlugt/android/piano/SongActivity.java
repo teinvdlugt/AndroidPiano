@@ -189,6 +189,13 @@ public class SongActivity extends AppCompatActivity {
                         getString(R.string.date_not_set));
             }
         });
+
+        tagLayout.setOnTagClickListener(new TagLayout.OnTagClickListener() {
+            @Override
+            public void onClickTag(String tag) {
+                Toast.makeText(SongActivity.this, "Lol. You clicked " + tag + "!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private DatePickerDialog createDatePicker(Long timeInMillis, DatePickerDialog.OnDateSetListener onDateSetListener) {

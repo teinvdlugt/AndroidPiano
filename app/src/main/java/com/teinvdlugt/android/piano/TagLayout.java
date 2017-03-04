@@ -13,6 +13,15 @@ import android.widget.TextView;
 
 public class TagLayout extends ViewGroup {
     private int deviceWidth;
+    private OnTagClickListener onTagClickListener;
+
+    interface OnTagClickListener {
+        void onClickTag(String tag);
+    }
+
+    public void setOnTagClickListener(OnTagClickListener onTagClickListener) {
+        this.onTagClickListener = onTagClickListener;
+    }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -67,8 +76,8 @@ public class TagLayout extends ViewGroup {
         int textColor = SongActivity.getColor(getContext(), R.color.textColorPrimary);
 
         String[] tags = tagsString.split(",");
-        for (String tag : tags) {
-            tag = tag.trim();
+        for (String tagWithHair : tags) {
+            final String tag = tagWithHair.trim();
             if (tag.isEmpty()) continue;
             TextView textView = new TextView(getContext());
             textView.setBackgroundColor(tagColor);
@@ -79,6 +88,14 @@ public class TagLayout extends ViewGroup {
             frameLayout.setPadding(margins, margins, margins, margins);
             frameLayout.addView(textView);
             addView(frameLayout);
+
+            textView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onTagClickListener != null)
+                        onTagClickListener.onClickTag(tag);
+                }
+            });
         }
     }
 
