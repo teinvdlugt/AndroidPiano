@@ -51,6 +51,10 @@ class Song implements Serializable, Listable {
         for (String s : new String[]{title, composer, opus, description}) {
             if (!(s == null || s.isEmpty())) sb.append(" ").append(s);
         }
+        if (tags != null) {
+            for (String tag : tags.split(","))
+                sb.append(" ").append(tag);
+        }
         return sb.toString().trim();
     }
 
