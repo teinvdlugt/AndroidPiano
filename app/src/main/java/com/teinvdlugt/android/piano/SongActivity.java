@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -327,6 +329,14 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
         composerTV.setVisibility(mSong.getComposer() == null ? View.GONE : View.VISIBLE);
         if (mSong.getTags() != null) tagLayout.setTags(mSong.getTags());
         tagLayout.setVisibility(mSong.getTags() == null ? View.GONE : View.VISIBLE);
+
+        // If the title is not set, assume that it is a new entry and
+        // switch to editing mode and focus titleET
+        if (mSong.getTitle() == null) {
+            editingLayout.setVisibility(View.VISIBLE);
+            notEditingLayout.setVisibility(View.GONE);
+            titleET.requestFocus();
+        }
     }
 
     @Override

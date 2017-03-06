@@ -88,7 +88,8 @@ class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(Context context, Song data) {
             mSong = data;
-            mTitleTV.setText(data.getTitle());
+            if (data.getTitle() == null) mTitleTV.setText(R.string.untitled);
+            else mTitleTV.setText(data.getTitle());
             starImage.setVisibility(data.isStarred() ? View.VISIBLE : View.GONE);
 
             // Set composer name & opus text in same TextView
