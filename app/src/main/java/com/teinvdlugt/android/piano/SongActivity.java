@@ -215,6 +215,9 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.stateDoneLearning_radioButton:
                         mSong.setState(Database.STATE_DONE_LEARNING);
                         break;
+                    case R.id.statePerformanceReady_radioButton:
+                        mSong.setState(Database.STATE_PERFORMANCE_READY);
+                        break;
                 }
                 mRef.setValue(mSong);
             }
@@ -296,6 +299,9 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case Database.STATE_DONE_LEARNING:
                 stateRG.check(R.id.stateDoneLearning_radioButton);
+                break;
+            case Database.STATE_PERFORMANCE_READY:
+                stateRG.check(R.id.statePerformanceReady_radioButton);
                 break;
         }
         wishListSW.setChecked(mSong.isWishList());

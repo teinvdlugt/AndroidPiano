@@ -14,9 +14,10 @@ public class Database {
     public static final String DESCRIPTION = "description";
 
     // Song 'state' enums
-    public static final String STATE_NOT_LEARNING = "not_learning";
-    public static final String STATE_CURRENTLY_LEARNING = "currently_learning";
-    public static final String STATE_DONE_LEARNING = "done_learning";
+    static final String STATE_NOT_LEARNING = "not_learning";
+    static final String STATE_CURRENTLY_LEARNING = "currently_learning";
+    static final String STATE_DONE_LEARNING = "done_learning";
+    static final String STATE_PERFORMANCE_READY = "performance_ready";
 
     // Get FirebaseDatabase instance across Activity lifecycles
     // Otherwise, FirebaseDatabase.getInstance().setPersistenceEnabled(true)
