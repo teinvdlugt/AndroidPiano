@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -45,6 +46,7 @@ import java.util.Date;
 
 public class SongActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String SONG_EXTRA = "song";
+    public static final String SONG_KEY_EXTRA = "songKey";
     public static final String COMPOSER_NAMES_EXTRA = "composerNames";
     public static final String TAGS_EXTRA = "tags";
 
@@ -83,24 +85,22 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
         initViews();
         setupAutoComplete();
 
-        mSong = (Song) getIntent().getSerializableExtra(SONG_EXTRA);
-        if (mSong == null) mSong = new Song();
-        loadSong();
-
+        String songKey = getIntent().getStringExtra(SONG_KEY_EXTRA);
         mRef = Database.getDatabaseInstance().getReference()
                 .child(Database.USERS)
                 .child(user.getUid())
                 .child(Database.SONGS)
-                .child(mSong.getKey());
+                .child(songKey);
         mValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() == null) {
+                mSong = dataSnapshot.getValue(Song.class);
+                if (mSong == null) {
                     // Song was probably removed
                     finish();
+                } else {
+                    loadSong();
                 }
-                mSong = dataSnapshot.getValue(Song.class);
-                if (mSong != null) loadSong();
             }
 
             @Override
@@ -372,10 +372,10 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
         else return context.getResources().getColor(colorId);
     }
 
-    public static void openActivity(Context context, Song song,
+    public static void openActivity(Context context, String key,
                                     ArrayList<String> composerNames, ArrayList<String> tags) {
         context.startActivity(new Intent(context, SongActivity.class)
-                .putExtra(SongActivity.SONG_EXTRA, song)
+                .putExtra(SongActivity.SONG_KEY_EXTRA, key)
                 .putExtra(COMPOSER_NAMES_EXTRA, composerNames)
                 .putExtra(TAGS_EXTRA, tags));
     }
