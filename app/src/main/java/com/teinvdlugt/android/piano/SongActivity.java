@@ -21,11 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -181,26 +178,34 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
                 // Firebase listener handles the UI change
                 break;
             case R.id.edit_imageButton:
+                titleET.setText(mSong.getTitle());
+                composerACTV.setText(mSong.getComposer());
+                opusET.setText(mSong.getOpus());
+                descriptionET.setText(mSong.getDescription());
+                tagsMACTV.setText(mSong.getTags());
                 editingLayout.setVisibility(View.VISIBLE);
                 notEditingLayout.setVisibility(View.GONE);
                 break;
             case R.id.save_imageButton:
-                String title = titleET.getText().toString().trim();
-                String composer = composerACTV.getText().toString().trim();
-                String opus = opusET.getText().toString().trim();
-                String description = descriptionET.getText().toString().trim();
-                String tags = tagsMACTV.getText().toString().trim();
-                mSong.setTitle(title.isEmpty() ? null : title);
-                mSong.setComposer(composer.isEmpty() ? null : composer);
-                mSong.setOpus(opus.isEmpty() ? null : opus);
-                mSong.setDescription(description.isEmpty() ? null : description);
-                mSong.setTags(tags.isEmpty() ? null : tags);
-                mRef.setValue(mSong);
-
+                saveTexts();
                 editingLayout.setVisibility(View.GONE);
                 notEditingLayout.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    private void saveTexts() {
+        String title = titleET.getText().toString().trim();
+        String composer = composerACTV.getText().toString().trim();
+        String opus = opusET.getText().toString().trim();
+        String description = descriptionET.getText().toString().trim();
+        String tags = tagsMACTV.getText().toString().trim();
+        mSong.setTitle(title.isEmpty() ? null : title);
+        mSong.setComposer(composer.isEmpty() ? null : composer);
+        mSong.setOpus(opus.isEmpty() ? null : opus);
+        mSong.setDescription(description.isEmpty() ? null : description);
+        mSong.setTags(tags.isEmpty() ? null : tags);
+        mRef.setValue(mSong);
     }
 
     private void setChangeListeners() {
@@ -312,13 +317,6 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
                 mSong.getStartedLearningDate() == null ? getString(R.string.date_not_set)
                         : DateFormat.getDateInstance().format(mSong.getStartedLearningDate()));
 
-        // Views in edit mode
-        titleET.setText(mSong.getTitle());
-        composerACTV.setText(mSong.getComposer());
-        opusET.setText(mSong.getOpus());
-        descriptionET.setText(mSong.getDescription());
-        tagsMACTV.setText(mSong.getTags());
-
         // Views in no-edit mode
         titleTV.setText(mSong.getTitle() == null ? getString(R.string.untitled) : mSong.getTitle());
         opusTV.setText(mSong.getOpus());
@@ -380,6 +378,8 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
+        if (mSong != null && editingLayout.getVisibility() == View.VISIBLE) // If in edit mode
+            saveTexts();
         mRef.removeEventListener(mValueListener);
         super.onDestroy();
     }
