@@ -337,6 +337,8 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
             notEditingLayout.setVisibility(View.GONE);
             titleET.requestFocus();
         }
+
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -357,7 +359,7 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             case R.id.star_menuAction:
                 mSong.setStarred(!mSong.isStarred());
-                invalidateOptionsMenu();
+                mRef.setValue(mSong);
                 return true;
             case R.id.remove_menuAction:
                 new AlertDialog.Builder(SongActivity.this)
