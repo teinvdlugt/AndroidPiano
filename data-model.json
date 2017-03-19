@@ -9,7 +9,10 @@
           "date_composed": 1910,
           "date_practise_start": 2017,
           "date_practise_end": null,
-          "state": 0,
+          "state": "not-learning",
+          "sessions": {
+            "$timestamp": "$duration"
+          },
           "by_heart": false,
           "custom_switch_1": true,
           "custom_text_1": true,

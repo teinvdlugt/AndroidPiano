@@ -12,6 +12,7 @@ public class Database {
     public static final String COMPOSER = "composer";
     public static final String OPUS = "opus";
     public static final String DESCRIPTION = "description";
+    public static final String SESSIONS = "sessions";
 
     // Song 'state' enums
     static final String STATE_NOT_LEARNING = "not_learning";

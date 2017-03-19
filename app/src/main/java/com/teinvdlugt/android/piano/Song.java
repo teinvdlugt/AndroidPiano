@@ -1,6 +1,7 @@
 package com.teinvdlugt.android.piano;
 
 import com.google.firebase.database.DataSnapshot;
+import com.teinvdlugt.android.piano.practise.Session;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ class Song implements Serializable, Listable {
     private boolean starred;
     private Long startedLearningDate; // In milliseconds
     private String tags;
+    private List<Session> sessions;
 
     private String key;
 

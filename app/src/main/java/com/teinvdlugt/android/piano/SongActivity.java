@@ -142,6 +142,7 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.startedLearningDate_clear_imageButton).setOnClickListener(this);
         findViewById(R.id.edit_imageButton).setOnClickListener(this);
         findViewById(R.id.save_imageButton).setOnClickListener(this);
+        findViewById(R.id.practise_button).setOnClickListener(this);
 
         tagLayout.setOnTagClickListener(new TagLayout.OnTagClickListener() {
             @Override
@@ -191,6 +192,8 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
                 editingLayout.setVisibility(View.GONE);
                 notEditingLayout.setVisibility(View.VISIBLE);
                 break;
+            case R.id.practise_button:
+
         }
     }
 

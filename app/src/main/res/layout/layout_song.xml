@@ -18,6 +18,15 @@
             layout="@layout/layout_song_texts_noedit" />
     </FrameLayout>
 
+    <Button
+        android:id="@+id/practise_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/practise_button"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"/>
+
     <include layout="@layout/layout_divider" />
 
     <RadioGroup

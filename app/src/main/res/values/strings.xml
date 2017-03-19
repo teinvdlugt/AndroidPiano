@@ -36,4 +36,6 @@
     <string name="tags_hint">Tags (separate by comma)</string>
     <string name="untitled">Untitled</string>
     <string name="state_performanceReady">Performance ready</string>
+    <string name="practise_button">Practise</string>
+    <string name="practiseDurationMinutes_format">%d minutes</string>
 </resources>
