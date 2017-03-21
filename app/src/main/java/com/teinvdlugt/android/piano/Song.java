@@ -158,4 +158,12 @@ class Song implements Serializable, Listable {
     public void setTags(String tags) {
         this.tags = tags;
     }
+
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
+    }
 }

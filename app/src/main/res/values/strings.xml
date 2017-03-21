@@ -4,7 +4,7 @@
     <string name="composer_hint">Composer</string>
     <string name="opus_hint">Opus or album</string>
     <string name="description_hint">Notes</string>
-    <string name="button_save">Save</string>
+    <string name="save">Save</string>
     <string name="composer_opus_format" formatted="false">%s, %s</string>
     <string name="switch_byHeart">By heart</string>
     <string name="state_currentlyLearning">Currently learning</string>
@@ -36,6 +36,11 @@
     <string name="tags_hint">Tags (separate by comma)</string>
     <string name="untitled">Untitled</string>
     <string name="state_performanceReady">Performance ready</string>
-    <string name="practise_button">Practise</string>
+    <string name="practise">Practise</string>
     <string name="practiseDurationMinutes_format">%d minutes</string>
+    <string name="add_session">Add session</string>
+    <string name="start_session">Start new session</string>
+    <string name="duration_hint">Duration</string>
+    <string name="duration_minutes_hint">Duration (minutes)</string>
+    <string name="sessionDescription_hint">Describe what you have practised</string>
 </resources>

@@ -37,6 +37,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.teinvdlugt.android.piano.practise.SessionsActivity;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -44,7 +45,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class SongActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final String SONG_EXTRA = "song";
     public static final String SONG_KEY_EXTRA = "songKey";
     public static final String COMPOSER_NAMES_EXTRA = "composerNames";
     public static final String TAGS_EXTRA = "tags";
@@ -193,7 +193,7 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
                 notEditingLayout.setVisibility(View.VISIBLE);
                 break;
             case R.id.practise_button:
-
+                SessionsActivity.openActivity(this, mRef.getKey());
         }
     }
 
