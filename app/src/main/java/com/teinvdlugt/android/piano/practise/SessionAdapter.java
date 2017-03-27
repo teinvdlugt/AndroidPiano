@@ -20,7 +20,8 @@ class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHolder> {
 
     SessionAdapter(Context context, List<Session> data) {
         this.context = context;
-        dateFormat = DateFormat.getDateTimeInstance();
+        this.data = data;
+        dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT);
     }
 
     public void setData(List<Session> data) {
@@ -31,7 +32,7 @@ class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(context)
-                .inflate(android.R.layout.two_line_list_item, parent, false));
+                .inflate(R.layout.list_item_two_line, parent, false));
     }
 
     @Override
@@ -49,8 +50,8 @@ class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.ViewHolder> {
 
         ViewHolder(View itemView) {
             super(itemView);
-            textView1 = (TextView) itemView.findViewById(android.R.id.text1);
-            textView2 = (TextView) itemView.findViewById(android.R.id.text2);
+            textView1 = (TextView) itemView.findViewById(R.id.textView1);
+            textView2 = (TextView) itemView.findViewById(R.id.textView2);
         }
 
         void bind(Session data) {
