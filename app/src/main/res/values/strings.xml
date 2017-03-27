@@ -43,4 +43,5 @@
     <string name="duration_hint">Duration</string>
     <string name="duration_minutes_hint">Duration (minutes)</string>
     <string name="sessionDescription_hint">Describe what you have practised</string>
+    <string name="session_format" formatted="false">%s\n%d minutes\nDescription: %s</string>
 </resources>
