@@ -44,4 +44,6 @@
     <string name="duration_minutes_hint">Duration (minutes)</string>
     <string name="sessionDescription_hint">Describe what you have practised</string>
     <string name="session_format" formatted="false">%s\n%d minutes\nDescription: %s</string>
+    <string name="xs_open_drawer">Open menu</string>
+    <string name="xs_close_drawer">Close drawer</string>
 </resources>

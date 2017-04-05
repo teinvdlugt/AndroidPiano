@@ -24,10 +24,19 @@ class Song implements Serializable, Listable {
     static ArrayList<String> getTags(List<Song> songs) {
         Set<String> set = new HashSet<>();
         for (Song song : songs) {
-            List<String> tags = song.createTagsList();
+            List<String> tags = splitTags(song.getTags());
             set.addAll(tags);
         }
         return new ArrayList<>(set);
+    }
+
+    static ArrayList<String> splitTags(String tags) {
+        if (tags == null) return new ArrayList<>();
+        String[] array = tags.split(",");
+        ArrayList<String> list = new ArrayList<>();
+        for (String tag : array)
+            list.add(tag.trim());
+        return list;
     }
 
     private String title;
@@ -58,15 +67,6 @@ class Song implements Serializable, Listable {
                 sb.append(" ").append(tag);
         }
         return sb.toString().trim();
-    }
-
-    private ArrayList<String> createTagsList() {
-        if (tags == null) return new ArrayList<>();
-        String[] array = tags.split(",");
-        ArrayList<String> list = new ArrayList<>();
-        for (String tag : array)
-            list.add(tag.trim());
-        return list;
     }
 
     Song() {}
