@@ -2,17 +2,20 @@ package com.teinvdlugt.android.piano;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,20 +32,23 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, RecyclerAdapter.OnSongClickListener {
-    private static final String TAG = "MainActivity"; // Debugging
-
     public static final String SORT_BY_PREF = "sort_by";
     public static final int SORT_BY_TITLE = 0;
     public static final int SORT_BY_COMPOSER = 1;
 
     private FirebaseAuth mAuth;
 
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar mToolbar;
     private RecyclerAdapter mAdapter;
     private DatabaseReference mSongsRef;
     private List<Song> mSongs;  // This List contains all songs, no matter the filter
 
     private Filter mFilter = new Filter();
     private Sorter mSorter = new Sorter();
+
+    private String tag = null; // If null, activity displays all songs. If not null, displays all songs with the tag.
 
     private ValueEventListener eventListener = new ValueEventListener() {
         @Override
@@ -59,12 +65,20 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         // TODO Maybe show when app is offline?
         // https://firebase.google.com/docs/database/android/offline-capabilities#section-connection-state
 
         // Deal with Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        mDrawerToggle = new ActionBarDrawerToggle(this,
+                mDrawerLayout, mToolbar, R.string.xs_open_drawer, R.string.xs_close_drawer);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         // Deal with Firebase Database and RecyclerAdapter
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -73,6 +87,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mAdapter = new RecyclerAdapter(this, this);
 
         recyclerView.setAdapter(mAdapter);
+
+        if (savedInstanceState != null)
+            tag = savedInstanceState.getString(TAG);
+        if (tag != null) setTag(tag);
     }
 
     @Override
@@ -80,11 +98,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
             // User is signed in
-            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid() + ":" + user.getDisplayName());
             retrieveSongs(user.getUid());
         } else {
             // User is signed out
-            Log.d(TAG, "onAuthStateChanged:signed_out");
             startActivity(new Intent(MainActivity.this, SignInActivity.class));
         }
     }
@@ -104,6 +120,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
      * the sorting method.
      */
     private void resetAdapterSongs() {
+        if (mSongs == null) {
+            mAdapter.setData(null);
+            return;
+        }
         List<Song> filteredAndSorted =
                 mSorter.sort(mFilter.filter(mSongs));
         if (PreferenceManager.getDefaultSharedPreferences(this)
@@ -122,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) return true;
+
         switch (item.getItemId()) {
             case R.id.sort_by_composer_menu_action:
                 item.setChecked(!item.isChecked());
@@ -161,6 +183,11 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if (tag != null) {
+            // We are in tag mode; don't show any icons here
+            return false;
+        }
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
         // Check composer box (or not)
         menu.findItem(R.id.sort_by_composer_menu_action)
@@ -189,7 +216,10 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     @Override
     public void onBackPressed() {
-        if (mFilter.getSearchQuery() != null && !mFilter.getSearchQuery().isEmpty()) {
+        if (tag != null)
+            exitTagMode();
+
+        else if (mFilter.getSearchQuery() != null && !mFilter.getSearchQuery().isEmpty()) {
             // Hide soft keyboard
             View focus = getCurrentFocus();
             if (focus != null) {
@@ -200,9 +230,8 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
             invalidateOptionsMenu();
             mFilter.setSearchQuery(null);
             resetAdapterSongs();
-        } else {
+        } else
             super.onBackPressed();
-        }
     }
 
     @Override
@@ -231,9 +260,27 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     void setTag(String tag) {
-        // TODO: 5-4-17 Show back arrow in toolbar
+        this.tag = tag;
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+        mDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exitTagMode();
+            }
+        });
         setTitle(tag);
+        invalidateOptionsMenu();
         mFilter = Filter.tagFilter(tag);
+        mSorter = new Sorter();
+        resetAdapterSongs();
+    }
+
+    private void exitTagMode() {
+        this.tag = null;
+        setTitle(R.string.app_name);
+        invalidateOptionsMenu();
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mFilter = new Filter();
         mSorter = new Sorter();
         resetAdapterSongs();
     }
@@ -252,16 +299,31 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     // Saving and restoring the filter state across lifecycles
     public static final String FILTER = "filter";
+    public static final String TAG = "tag";
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(FILTER, mFilter);
+        outState.putString(TAG, tag);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mFilter = (Filter) savedInstanceState.getSerializable(FILTER);
+        tag = savedInstanceState.getString(TAG);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 }
