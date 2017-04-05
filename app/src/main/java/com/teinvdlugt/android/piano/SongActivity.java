@@ -1,5 +1,6 @@
 package com.teinvdlugt.android.piano;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -146,7 +147,8 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
         tagLayout.setOnTagClickListener(new TagLayout.OnTagClickListener() {
             @Override
             public void onClickTag(String tag) {
-                Toast.makeText(SongActivity.this, "Lol. You clicked " + tag + "!", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK, new Intent().putExtra(MainActivity.CLICKED_TAG_EXTRA, tag));
+                finish();
             }
         });
     }
@@ -390,11 +392,11 @@ public class SongActivity extends AppCompatActivity implements View.OnClickListe
         else return context.getResources().getColor(colorId);
     }
 
-    public static void openActivity(Context context, String key,
+    public static void openActivity(Activity activity, int requestCode, String key,
                                     ArrayList<String> composerNames, ArrayList<String> tags) {
-        context.startActivity(new Intent(context, SongActivity.class)
+        activity.startActivityForResult(new Intent(activity, SongActivity.class)
                 .putExtra(SongActivity.SONG_KEY_EXTRA, key)
                 .putExtra(COMPOSER_NAMES_EXTRA, composerNames)
-                .putExtra(TAGS_EXTRA, tags));
+                .putExtra(TAGS_EXTRA, tags), requestCode);
     }
 }

@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     @Override
     public void onClickSong(Song song) {
-        SongActivity.openActivity(this, song.getKey(), Composer.getComposerNames(mSongs), Song.getTags(mSongs));
+        SongActivity.openActivity(this, SONG_ACTIVITY_RC, song.getKey(), Composer.getComposerNames(mSongs), Song.getTags(mSongs));
     }
 
     public void onClickAddSong(View view) {
@@ -215,7 +215,27 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         String newKey = mSongsRef.push().getKey();
         mSongsRef.child(newKey).setValue(song);
         song.setKey(newKey);
-        SongActivity.openActivity(this, newKey, Composer.getComposerNames(mSongs), Song.getTags(mSongs));
+        SongActivity.openActivity(this, SONG_ACTIVITY_RC, newKey, Composer.getComposerNames(mSongs), Song.getTags(mSongs));
+    }
+
+    static final String CLICKED_TAG_EXTRA = "clicked_tag";
+    static final int SONG_ACTIVITY_RC = 42;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SONG_ACTIVITY_RC:
+                if (resultCode == RESULT_OK && data != null && data.getStringExtra(CLICKED_TAG_EXTRA) != null)
+                    setTag(data.getStringExtra(CLICKED_TAG_EXTRA));
+        }
+    }
+
+    void setTag(String tag) {
+        // TODO: 5-4-17 Show back arrow in toolbar
+        setTitle(tag);
+        mFilter = Filter.tagFilter(tag);
+        mSorter = new Sorter();
+        resetAdapterSongs();
     }
 
     @Override
