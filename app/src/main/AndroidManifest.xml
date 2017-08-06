@@ -22,7 +22,12 @@
 
         <activity android:name=".SignInActivity" />
 
-        <activity android:name=".practise.SessionsActivity"
-            android:label="@string/practise"/>
+        <activity
+            android:name=".practise.SessionsActivity"
+            android:label="@string/practise" />
+
+        <activity
+            android:name=".TagsActivity"
+            android:label="@string/tags" />
     </application>
 </manifest>

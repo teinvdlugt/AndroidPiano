@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,9 +30,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, RecyclerAdapter.OnSongClickListener {
+public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, RecyclerAdapter.OnSongClickListener, NavigationView.OnNavigationItemSelectedListener {
     public static final String SORT_BY_PREF = "sort_by";
     public static final int SORT_BY_TITLE = 0;
     public static final int SORT_BY_COMPOSER = 1;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    private NavigationView mNavigationView;
     private Toolbar mToolbar;
     private RecyclerAdapter mAdapter;
     private DatabaseReference mSongsRef;
@@ -74,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         // Deal with Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
+
+        mNavigationView = (NavigationView) findViewById(R.id.navigationView);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mDrawerToggle = new ActionBarDrawerToggle(this,
@@ -162,6 +169,43 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.tags_drawerItem:
+                startActivityForResult(new Intent(this, TagsActivity.class).putExtra(
+                        TagsActivity.TAGS_EXTRA, getAllTags(mSongs)), TAGS_ACTIVITY_RC);
+                mDrawerLayout.closeDrawer(mNavigationView);
+        }
+        return false;
+    }
+
+    private static String getAllTags(List<Song> songs) {
+        if (songs == null || songs.isEmpty()) {
+            return "";
+        }
+        // Get all tags in a Set
+        HashSet<String> tagsSet = new HashSet<>();
+        for (Song song : songs) {
+            String tagsString = song.getTags();
+            if (tagsString == null) continue;
+            String[] tagsArray = tagsString.split(",");
+            for (String tagWithHair : tagsArray) {
+                String tag = tagWithHair.trim();
+                if (tag.isEmpty()) continue;
+                tagsSet.add(tag);
+            }
+        }
+
+        // Convert to String[] and sort
+        String[] tags = tagsSet.toArray(new String[tagsSet.size()]);
+        Arrays.sort(tags);
+        StringBuilder tagsString = new StringBuilder();
+        for (String tag : tags)
+            tagsString.append(tag).append(",");
+        return tagsString.toString();
+    }
+
     private void onClickFilter() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.filter_dialogTitle);
@@ -248,12 +292,14 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     static final String CLICKED_TAG_EXTRA = "clicked_tag";
-    static final int SONG_ACTIVITY_RC = 42;
+    private static final int SONG_ACTIVITY_RC = 42;
+    private static final int TAGS_ACTIVITY_RC = 43;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case SONG_ACTIVITY_RC:
+            case TAGS_ACTIVITY_RC:
                 if (resultCode == RESULT_OK && data != null && data.getStringExtra(CLICKED_TAG_EXTRA) != null)
                     setTag(data.getStringExtra(CLICKED_TAG_EXTRA));
         }

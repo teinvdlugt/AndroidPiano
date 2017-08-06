@@ -46,4 +46,7 @@
     <string name="session_format" formatted="false">%s\n%d minutes\nDescription: %s</string>
     <string name="xs_open_drawer">Open menu</string>
     <string name="xs_close_drawer">Close drawer</string>
+    <string name="tags_drawerItem">Tags…</string>
+    <string name="no_tags_yet">There are no tags yet!</string>
+    <string name="tags">Tags</string>
 </resources>
